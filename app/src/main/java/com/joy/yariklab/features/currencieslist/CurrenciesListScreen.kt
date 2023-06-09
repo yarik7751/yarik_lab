@@ -25,6 +25,7 @@ import com.joy.yariklab.features.currencieslist.CurrenciesListViewModel.Event
 import com.joy.yariklab.features.currencieslist.model.CurrencyUi
 import com.joy.yariklab.navigation.FlowCoordinator
 import com.joy.yariklab.uikit.LabProgressBar
+import com.joy.yariklab.uikit.simplePadding
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -66,10 +67,9 @@ fun RefreshButton(viewModel: CurrenciesListViewModel) {
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(
+            .simplePadding(
                 top = 8.dp,
-                start = 8.dp,
-                end = 8.dp,
+                horizontal = 8.dp,
                 bottom = 4.dp,
             ),
         onClick = {
