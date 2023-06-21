@@ -6,10 +6,10 @@ import retrofit2.create
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-interface CurrenciesService {
+interface CurrenciesRemote {
 
     companion object {
-        fun getInstance(retrofit: Retrofit): CurrenciesService = retrofit.create()
+        fun getInstance(retrofit: Retrofit): CurrenciesRemote = retrofit.create()
     }
 
     @GET("exchangerates/tables/b/last/{lastAmount}")
