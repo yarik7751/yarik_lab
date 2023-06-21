@@ -3,6 +3,7 @@ package com.joy.yariklab.core.data
 import com.joy.yariklab.archkit.DispatchersProvider
 import com.joy.yariklab.core.api.service.CurrenciesRemote
 import com.joy.yariklab.core.data.model.Currency
+import com.joy.yariklab.core.data.model.CurrencyDetails
 import com.joy.yariklab.core.domain.CurrencyInteractor
 import com.joy.yariklab.core.local.CurrencyCache
 import kotlinx.coroutines.withContext
@@ -37,6 +38,25 @@ class CurrencyRepositoryImpl(
                     it
                 }
             }
+        }
+    }
+
+    override suspend fun getCurrencyByCode(code: String): CurrencyDetails {
+        return currenciesRemote.getCurrenciesByCode(code).let { currencyRemotes ->
+            CurrencyDetails(
+                code = currencyRemotes.code.orEmpty(),
+                country = currencyRemotes.country.orEmpty(),
+                currency = currencyRemotes.currency.orEmpty(),
+                symbol = currencyRemotes.symbol.orEmpty(),
+                table = currencyRemotes.table.orEmpty(),
+                rates = currencyRemotes.rates.orEmpty().map { rate ->
+                    CurrencyDetails.Rate(
+                        effectiveDate = rate.effectiveDate.orEmpty(),
+                        mid = rate.mid ?: 0.0,
+                        no = rate.no.orEmpty(),
+                    )
+                },
+            )
         }
     }
 }

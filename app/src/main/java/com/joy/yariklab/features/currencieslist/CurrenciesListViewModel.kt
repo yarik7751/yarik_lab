@@ -11,7 +11,7 @@ import com.joy.yariklab.features.currencieslist.model.CurrencyUi
 import kotlinx.coroutines.launch
 
 class CurrenciesListViewModel(
-    val currencyInteractor: CurrencyInteractor,
+    private val currencyInteractor: CurrencyInteractor,
 ) : ViewModel(), ViewStateDelegate<ViewState, Event> by ViewStateDelegateImpl(ViewState()) {
 
     data class ViewState(
@@ -35,7 +35,7 @@ class CurrenciesListViewModel(
             currencyInteractor.getCurrencies().last().rates.map { rate ->
                 CurrencyUi(
                     code = rate.code,
-                    title = rate.currency
+                    title = rate.currency,
                 )
             }.sortedBy { it.code }.let { currencies ->
                 reduce {
