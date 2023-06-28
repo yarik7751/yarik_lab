@@ -22,7 +22,9 @@ val appModule = module {
         )
     }
     viewModel {
-        CurrencyDetailsViewModel()
+        CurrencyDetailsViewModel(
+            currencyInteractor = get(),
+        )
     }
 
     single {
