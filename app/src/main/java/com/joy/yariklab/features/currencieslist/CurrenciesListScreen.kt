@@ -14,17 +14,18 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.joy.yariklab.features.currencieslist.CurrenciesListViewModel.Event
 import com.joy.yariklab.features.currencieslist.model.CurrencyUi
 import com.joy.yariklab.navigation.FlowCoordinator
 import com.joy.yariklab.uikit.LabProgressBar
+import com.joy.yariklab.uikit.itemCountPreview
 import com.joy.yariklab.uikit.simplePadding
 import kotlinx.coroutines.flow.collectLatest
 
@@ -46,7 +47,7 @@ fun CurrenciesList(
     ) {
         RefreshButton(viewModel)
         CurrencyList(
-            state = state,
+            currencies = state.value.currencies,
             viewModel = viewModel,
         )
     }
@@ -62,8 +63,27 @@ fun CurrenciesList(
     }
 }
 
+@Preview
 @Composable
-fun RefreshButton(viewModel: CurrenciesListViewModel) {
+fun CurrenciesList() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        RefreshButton()
+        CurrencyList(
+            currencies = CurrencyUi(
+                code = "test code",
+                title = "test title",
+            ).itemCountPreview(5),
+        )
+    }
+}
+
+
+@Composable
+fun RefreshButton(viewModel: CurrenciesListViewModel? = null) {
     Button(
         modifier = Modifier
             .fillMaxWidth()
@@ -73,7 +93,7 @@ fun RefreshButton(viewModel: CurrenciesListViewModel) {
                 bottom = 4.dp,
             ),
         onClick = {
-            viewModel.onRefreshClick()
+            viewModel?.onRefreshClick()
         }
     ) {
         Text("Refresh")
@@ -82,8 +102,8 @@ fun RefreshButton(viewModel: CurrenciesListViewModel) {
 
 @Composable
 fun CurrencyList(
-    state: State<CurrenciesListViewModel.ViewState>,
-    viewModel: CurrenciesListViewModel,
+    currencies: List<CurrencyUi>,
+    viewModel: CurrenciesListViewModel? = null,
 ) {
     Box(
         modifier = Modifier
@@ -96,7 +116,7 @@ fun CurrencyList(
                 .padding(4.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            state.value.currencies.forEachIndexed { index, currency ->
+            currencies.forEachIndexed { index, currency ->
                 CurrencyListItem(
                     index = index,
                     currency = currency,
@@ -111,7 +131,7 @@ fun CurrencyList(
 fun CurrencyListItem(
     index: Int,
     currency: CurrencyUi,
-    viewModel: CurrenciesListViewModel,
+    viewModel: CurrenciesListViewModel? = null,
 ) {
     val backgroundColor = when {
         index % 2 == 0 -> Color.Yellow
@@ -122,7 +142,7 @@ fun CurrencyListItem(
             .fillMaxWidth()
             .background(backgroundColor)
             .clickable {
-                viewModel.onCurrencyClick(currency.code)
+                viewModel?.onCurrencyClick(currency.code)
             },
     ) {
         Column(

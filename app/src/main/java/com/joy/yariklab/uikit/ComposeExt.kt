@@ -47,3 +47,21 @@ fun Modifier.simplePadding(
         )
     )
 }
+
+fun <T> List<T>.repeatForPreview(count: Int): List<T> {
+    val mutableList = this.toMutableList()
+    (0..count).forEach {
+        mutableList.addAll(mutableList)
+    }
+
+    return mutableList
+}
+
+fun <T> T.itemCountPreview(count: Int): List<T> {
+    val mutableList = mutableListOf<T>()
+    repeat(count) {
+        mutableList.add(this)
+    }
+
+    return mutableList
+}
