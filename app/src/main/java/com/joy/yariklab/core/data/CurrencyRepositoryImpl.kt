@@ -42,21 +42,23 @@ class CurrencyRepositoryImpl(
     }
 
     override suspend fun getCurrencyByCode(code: String): CurrencyDetails {
-        return currenciesRemote.getCurrenciesByCode(code).let { currencyRemotes ->
-            CurrencyDetails(
-                code = currencyRemotes.code.orEmpty(),
-                country = currencyRemotes.country.orEmpty(),
-                currency = currencyRemotes.currency.orEmpty(),
-                symbol = currencyRemotes.symbol.orEmpty(),
-                table = currencyRemotes.table.orEmpty(),
-                rates = currencyRemotes.rates.orEmpty().map { rate ->
-                    CurrencyDetails.Rate(
-                        effectiveDate = rate.effectiveDate.orEmpty(),
-                        mid = rate.mid ?: 0.0,
-                        no = rate.no.orEmpty(),
-                    )
-                },
-            )
+        return withContext(dispatchersProvider.background()) {
+            currenciesRemote.getCurrenciesByCode(code).let { currencyRemotes ->
+                CurrencyDetails(
+                    code = currencyRemotes.code.orEmpty(),
+                    country = currencyRemotes.country.orEmpty(),
+                    currency = currencyRemotes.currency.orEmpty(),
+                    symbol = currencyRemotes.symbol.orEmpty(),
+                    table = currencyRemotes.table.orEmpty(),
+                    rates = currencyRemotes.rates.orEmpty().map { rate ->
+                        CurrencyDetails.Rate(
+                            effectiveDate = rate.effectiveDate.orEmpty(),
+                            mid = rate.mid ?: 0.0,
+                            no = rate.no.orEmpty(),
+                        )
+                    },
+                )
+            }
         }
     }
 }

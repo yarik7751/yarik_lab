@@ -23,6 +23,7 @@ val appModule = module {
     }
     viewModel {
         CurrencyDetailsViewModel(
+            currencyCode = it.get(),
             currencyInteractor = get(),
         )
     }

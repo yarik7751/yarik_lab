@@ -30,7 +30,7 @@ import com.joy.yariklab.uikit.simplePadding
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun CurrenciesList(
+fun CurrenciesListScreen(
     viewModel: CurrenciesListViewModel,
     flowCoordinator: FlowCoordinator,
 ) {
@@ -40,17 +40,10 @@ fun CurrenciesList(
         LabProgressBar()
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        RefreshButton(viewModel)
-        CurrencyList(
-            currencies = state.value.currencies,
-            viewModel = viewModel,
-        )
-    }
+    CurrenciesListInfo(
+        viewModel = viewModel,
+        currencies = state.value.currencies,
+    )
 
     LaunchedEffect(key1 = Unit) {
         viewModel.singleEvents.collectLatest { event ->
@@ -65,22 +58,32 @@ fun CurrenciesList(
 
 @Preview
 @Composable
-fun CurrenciesList() {
+fun CurrenciesListScreenPreview() {
+    CurrenciesListInfo(
+        currencies = CurrencyUi(
+            code = "test code",
+            title = "test title",
+        ).itemCountPreview(5),
+    )
+}
+
+@Composable
+fun CurrenciesListInfo(
+    viewModel: CurrenciesListViewModel? = null,
+    currencies: List<CurrencyUi>,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        RefreshButton()
+        RefreshButton(viewModel)
         CurrencyList(
-            currencies = CurrencyUi(
-                code = "test code",
-                title = "test title",
-            ).itemCountPreview(5),
+            currencies = currencies,
+            viewModel = viewModel,
         )
     }
 }
-
 
 @Composable
 fun RefreshButton(viewModel: CurrenciesListViewModel? = null) {

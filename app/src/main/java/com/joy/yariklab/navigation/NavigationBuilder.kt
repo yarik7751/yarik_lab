@@ -7,8 +7,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.joy.yariklab.features.curencydetails.CurrencyDetailsScreen
-import com.joy.yariklab.features.currencieslist.CurrenciesList
+import com.joy.yariklab.features.currencieslist.CurrenciesListScreen
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
+
+private const val ARGS_CURRENCY_CODE = "code"
 
 fun NavGraphBuilder.buildNavigation(navController: NavController) {
 
@@ -21,21 +24,24 @@ fun NavGraphBuilder.buildNavigation(navController: NavController) {
         composable(
             route = Navigation.CurrenciesList.destination
         ) {
-            CurrenciesList(
+            CurrenciesListScreen(
                 viewModel = koinViewModel(),
                 flowCoordinator = flowCoordinator,
             )
         }
         composable(
-            route = "${Navigation.CurrenciesDetails.destination}/{code}",
+            route = "${Navigation.CurrenciesDetails.destination}/{$ARGS_CURRENCY_CODE}",
             arguments = listOf(
-                navArgument("code") {
+                navArgument(ARGS_CURRENCY_CODE) {
                     type = NavType.StringType
                 },
             ),
-        ) {
+        ) { navBackStackEntry ->
+            val currencyCode = navBackStackEntry.arguments?.getString(ARGS_CURRENCY_CODE).orEmpty()
             CurrencyDetailsScreen(
-                viewModel = koinViewModel(),
+                viewModel = koinViewModel(
+                    parameters = { parametersOf(currencyCode) }
+                ),
                 flowCoordinator = flowCoordinator,
             )
         }
