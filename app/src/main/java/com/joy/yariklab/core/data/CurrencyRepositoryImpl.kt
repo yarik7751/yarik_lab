@@ -4,7 +4,7 @@ import com.joy.yariklab.archkit.DispatchersProvider
 import com.joy.yariklab.core.api.service.CurrenciesRemote
 import com.joy.yariklab.core.data.model.Currency
 import com.joy.yariklab.core.data.model.CurrencyDetails
-import com.joy.yariklab.core.domain.CurrencyInteractor
+import com.joy.yariklab.core.domain.repository.CurrencyRepository
 import com.joy.yariklab.core.local.CurrencyCache
 import kotlinx.coroutines.withContext
 
@@ -14,7 +14,7 @@ class CurrencyRepositoryImpl(
     private val dispatchersProvider: DispatchersProvider,
     private val currenciesRemote: CurrenciesRemote,
     private val currencyCache: CurrencyCache,
-) : CurrencyInteractor {
+) : CurrencyRepository {
 
     override suspend fun getCurrencies(): List<Currency> {
         return withContext(dispatchersProvider.background()) {

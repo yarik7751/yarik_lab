@@ -7,7 +7,9 @@ import com.joy.yariklab.core.api.getRetorfitInstance
 import com.joy.yariklab.core.api.service.CurrenciesRemote
 import com.joy.yariklab.core.data.CurrencyRepositoryImpl
 import com.joy.yariklab.core.db.CurrenciesDatabase
-import com.joy.yariklab.core.domain.CurrencyInteractor
+import com.joy.yariklab.core.domain.interactor.CurrencyInteractor
+import com.joy.yariklab.core.domain.interactor.CurrencyInteractorImpl
+import com.joy.yariklab.core.domain.repository.CurrencyRepository
 import com.joy.yariklab.core.local.CurrencyCache
 import com.joy.yariklab.core.local.CurrencyCacheImpl
 import com.joy.yariklab.features.curencydetails.CurrencyDetailsViewModel
@@ -46,11 +48,17 @@ val appModule = module {
         DispatchersProviderImpl()
     }
 
-    single<CurrencyInteractor> {
+    single<CurrencyRepository> {
         CurrencyRepositoryImpl(
             dispatchersProvider = get(),
             currenciesRemote = get(),
             currencyCache = get(),
+        )
+    }
+
+    single<CurrencyInteractor> {
+        CurrencyInteractorImpl(
+            currencyRepository = get(),
         )
     }
 

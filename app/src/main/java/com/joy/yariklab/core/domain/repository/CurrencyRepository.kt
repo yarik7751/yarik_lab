@@ -1,9 +1,10 @@
-package com.joy.yariklab.core.domain
+package com.joy.yariklab.core.domain.repository
 
 import com.joy.yariklab.core.data.model.Currency
 import com.joy.yariklab.core.data.model.CurrencyDetails
 
-interface CurrencyInteractor {
+interface CurrencyRepository {
+
 
     suspend fun getCurrencies(): List<Currency>
 

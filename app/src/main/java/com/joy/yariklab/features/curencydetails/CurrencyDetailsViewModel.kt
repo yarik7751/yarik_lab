@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.joy.yariklab.archkit.ViewStateDelegate
 import com.joy.yariklab.archkit.ViewStateDelegateImpl
-import com.joy.yariklab.core.domain.CurrencyInteractor
+import com.joy.yariklab.core.domain.interactor.CurrencyInteractor
 import com.joy.yariklab.features.curencydetails.CurrencyDetailsViewModel.Event
 import com.joy.yariklab.features.curencydetails.CurrencyDetailsViewModel.ViewState
 import com.joy.yariklab.features.curencydetails.model.CurrencyDetailsUi
