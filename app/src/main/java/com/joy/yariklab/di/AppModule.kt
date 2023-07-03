@@ -1,12 +1,16 @@
 package com.joy.yariklab.di
 
+import android.content.Context
+import android.content.SharedPreferences
 import com.joy.yariklab.archkit.DispatchersProvider
 import com.joy.yariklab.archkit.DispatchersProviderImpl
 import com.joy.yariklab.core.api.getOkHttpClient
 import com.joy.yariklab.core.api.getRetorfitInstance
 import com.joy.yariklab.core.api.service.CurrenciesRemote
+import com.joy.yariklab.core.cache.db.CurrenciesDatabase
+import com.joy.yariklab.core.cache.keyvalue.AppSettings
+import com.joy.yariklab.core.cache.keyvalue.AppSettingsImpl
 import com.joy.yariklab.core.data.CurrencyRepositoryImpl
-import com.joy.yariklab.core.db.CurrenciesDatabase
 import com.joy.yariklab.core.domain.interactor.CurrencyInteractor
 import com.joy.yariklab.core.domain.interactor.CurrencyInteractorImpl
 import com.joy.yariklab.core.domain.repository.CurrencyRepository
@@ -40,6 +44,16 @@ val appModule = module {
         )
     }
 
+    single<SharedPreferences> {
+        get<Context>().getSharedPreferences("CURRENCY_APP_PREFERENCES", Context.MODE_PRIVATE)
+    }
+
+    single<AppSettings> {
+        AppSettingsImpl(
+            preferences = get(),
+        )
+    }
+
     single {
         CurrenciesRemote.getInstance(retrofit = get())
     }
@@ -64,6 +78,7 @@ val appModule = module {
 
     single<CurrencyCache> {
         CurrencyCacheImpl(
+            appSettings = get(),
             currencyDao = get(),
             rateDao = get(),
         )

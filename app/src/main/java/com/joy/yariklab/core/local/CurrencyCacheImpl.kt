@@ -1,12 +1,15 @@
 package com.joy.yariklab.core.local
 
+import com.joy.yariklab.core.cache.db.dao.CurrencyDao
+import com.joy.yariklab.core.cache.db.dao.RateDao
+import com.joy.yariklab.core.cache.db.entity.CurrencyLocal
+import com.joy.yariklab.core.cache.db.entity.RateLocal
+import com.joy.yariklab.core.cache.keyvalue.AppSettings
 import com.joy.yariklab.core.data.model.Currency
-import com.joy.yariklab.core.db.dao.CurrencyDao
-import com.joy.yariklab.core.db.dao.RateDao
-import com.joy.yariklab.core.db.entity.CurrencyLocal
-import com.joy.yariklab.core.db.entity.RateLocal
+import com.joy.yariklab.toolskit.nullIfZero
 
 class CurrencyCacheImpl(
+    private val appSettings: AppSettings,
     private val currencyDao: CurrencyDao,
     private val rateDao: RateDao,
 ): CurrencyCache {
@@ -36,6 +39,10 @@ class CurrencyCacheImpl(
         }
     }
 
+    override suspend fun clearAllCurrencies() {
+        currencyDao.deleteAll()
+    }
+
     override suspend fun getCurrencies(): List<Currency> {
         return currencyDao.getAllCurrencies().map { currencyLocal ->
             val rates = rateDao.getRatesByCurrencyId(currencyLocal.id).map { rateLocal ->
@@ -52,5 +59,13 @@ class CurrencyCacheImpl(
                 table = currencyLocal.table,
             )
         }
+    }
+
+    override suspend fun getLastUpdateDateStamp(): Long? {
+        return appSettings.currenciesLastUpdateDateStamp.nullIfZero()
+    }
+
+    override suspend fun setLastUpdateDateStamp(timeStamp: Long) {
+        appSettings.currenciesLastUpdateDateStamp = timeStamp
     }
 }

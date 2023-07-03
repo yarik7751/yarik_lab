@@ -1,9 +1,9 @@
-package com.joy.yariklab.core.db.dao
+package com.joy.yariklab.core.cache.db.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.joy.yariklab.core.db.entity.RateLocal
+import com.joy.yariklab.core.cache.db.entity.RateLocal
 
 @Dao
 interface RateDao {

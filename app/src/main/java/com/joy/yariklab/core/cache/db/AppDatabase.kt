@@ -1,13 +1,13 @@
-package com.joy.yariklab.core.db
+package com.joy.yariklab.core.cache.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.joy.yariklab.core.db.dao.CurrencyDao
-import com.joy.yariklab.core.db.dao.RateDao
-import com.joy.yariklab.core.db.entity.CurrencyLocal
-import com.joy.yariklab.core.db.entity.RateLocal
+import com.joy.yariklab.core.cache.db.dao.CurrencyDao
+import com.joy.yariklab.core.cache.db.dao.RateDao
+import com.joy.yariklab.core.cache.db.entity.CurrencyLocal
+import com.joy.yariklab.core.cache.db.entity.RateLocal
 
 @Database(
     entities = [

@@ -2,6 +2,7 @@ package com.joy.yariklab.core.data
 
 import com.joy.yariklab.archkit.DispatchersProvider
 import com.joy.yariklab.core.api.service.CurrenciesRemote
+import com.joy.yariklab.core.data.model.CacheUpdateDataParams
 import com.joy.yariklab.core.data.model.Currency
 import com.joy.yariklab.core.data.model.CurrencyDetails
 import com.joy.yariklab.core.domain.repository.CurrencyRepository
@@ -16,8 +17,19 @@ class CurrencyRepositoryImpl(
     private val currencyCache: CurrencyCache,
 ) : CurrencyRepository {
 
-    override suspend fun getCurrencies(): List<Currency> {
+    override suspend fun getCurrencies(params: CacheUpdateDataParams): List<Currency> {
         return withContext(dispatchersProvider.background()) {
+            when(params) {
+                CacheUpdateDataParams.Leave -> {
+                    // none
+                }
+                is CacheUpdateDataParams.Update -> {
+                    currencyCache.apply {
+                        clearAllCurrencies()
+                        setLastUpdateDateStamp(params.currentTimeStamp)
+                    }
+                }
+            }
             val currencyLocal = currencyCache.getCurrencies()
             currencyLocal.ifEmpty {
                 currenciesRemote.getCurrencies(DEFAULT_LAST_AMOUNT).map { remote ->
@@ -60,5 +72,9 @@ class CurrencyRepositoryImpl(
                 )
             }
         }
+    }
+
+    override suspend fun getLastUpdateDateStamp(): Long? {
+        return currencyCache.getLastUpdateDateStamp()
     }
 }
