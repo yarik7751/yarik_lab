@@ -39,3 +39,20 @@ class LongPrefDelegate(
         }
     }
 }
+
+class BooleanPrefDelegate(
+    private val preferences: SharedPreferences,
+    private val name: String,
+    private val defaultValue: Boolean
+) : ReadWriteProperty<Any, Boolean> {
+
+    override fun getValue(thisRef: Any, property: KProperty<*>): Boolean {
+        return preferences.getBoolean(name, defaultValue)
+    }
+
+    override fun setValue(thisRef: Any, property: KProperty<*>, value: Boolean) {
+        preferences.edit(commit = true) {
+            putBoolean(name, value)
+        }
+    }
+}

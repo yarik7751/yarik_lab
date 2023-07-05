@@ -11,20 +11,32 @@ class CurrencyInteractorImpl(
     private val currencyRepository: CurrencyRepository,
 ): CurrencyInteractor {
 
+    // TODO must be tryToUpdate
     override suspend fun getCurrencies(): List<Currency> {
-        val lastUpdateDateStamp = currencyRepository.getLastUpdateDateStamp()
-            ?: return currencyRepository.getCurrencies(CacheUpdateDataParams.Update(System.currentTimeMillis()))
-
-        val diffTime = System.currentTimeMillis() - lastUpdateDateStamp
-
+        val isNeedToUpdateCurrencyCache = isNeedToUpdateCurrencyCache()
         val params = when {
-            diffTime >= MAX_TIME_DIFF_FOR_DATA_UPDATE -> CacheUpdateDataParams.Update(System.currentTimeMillis())
+            isNeedToUpdateCurrencyCache -> CacheUpdateDataParams.Update(System.currentTimeMillis())
             else -> CacheUpdateDataParams.Leave
         }
+
         return currencyRepository.getCurrencies(params)
     }
 
     override suspend fun getCurrencyByCode(code: String): CurrencyDetails {
         return currencyRepository.getCurrencyByCode(code)
+    }
+
+    override suspend fun logWorkManagerTasks(task: String) {
+        currencyRepository.logWorkManagerTasks(task)
+    }
+
+    override suspend fun isNeedToUpdateCurrencyCache(): Boolean {
+        val lastUpdateDateStamp = currencyRepository.lastUpdateDateStamp ?: return true
+        val diffTime = System.currentTimeMillis() - lastUpdateDateStamp
+        val result = diffTime >= MAX_TIME_DIFF_FOR_DATA_UPDATE
+        if (result.not()) {
+            currencyRepository.lastUpdateDateStamp = System.currentTimeMillis()
+        }
+        return result
     }
 }

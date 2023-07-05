@@ -6,10 +6,11 @@ import com.joy.yariklab.core.data.model.CurrencyDetails
 
 interface CurrencyRepository {
 
+    var lastUpdateDateStamp: Long?
 
     suspend fun getCurrencies(params: CacheUpdateDataParams): List<Currency>
 
     suspend fun getCurrencyByCode(code: String): CurrencyDetails
 
-    suspend fun getLastUpdateDateStamp(): Long?
+    suspend fun logWorkManagerTasks(task: String)
 }

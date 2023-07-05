@@ -18,10 +18,20 @@ import com.joy.yariklab.core.local.CurrencyCache
 import com.joy.yariklab.core.local.CurrencyCacheImpl
 import com.joy.yariklab.features.curencydetails.CurrencyDetailsViewModel
 import com.joy.yariklab.features.currencieslist.CurrenciesListViewModel
+import com.joy.yariklab.workmanager.CheckCurrencyDataWorker
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.workmanager.dsl.worker
 import org.koin.dsl.module
 
 val appModule = module {
+    worker {
+        CheckCurrencyDataWorker(
+            context = get(),
+            params = get(),
+            currencyInteractor = get(),
+        )
+    }
+
     viewModel {
         CurrenciesListViewModel(
             currencyInteractor = get(),

@@ -8,4 +8,8 @@ interface CurrencyInteractor {
     suspend fun getCurrencies(): List<Currency>
 
     suspend fun getCurrencyByCode(code: String): CurrencyDetails
+
+    suspend fun logWorkManagerTasks(task: String)
+
+    suspend fun isNeedToUpdateCurrencyCache(): Boolean
 }

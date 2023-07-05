@@ -17,6 +17,12 @@ class CurrencyRepositoryImpl(
     private val currencyCache: CurrencyCache,
 ) : CurrencyRepository {
 
+    override var lastUpdateDateStamp: Long?
+        get() = currencyCache.lastUpdateDateStamp
+        set(value) {
+            currencyCache.lastUpdateDateStamp = value
+        }
+
     override suspend fun getCurrencies(params: CacheUpdateDataParams): List<Currency> {
         return withContext(dispatchersProvider.background()) {
             when(params) {
@@ -26,7 +32,6 @@ class CurrencyRepositoryImpl(
                 is CacheUpdateDataParams.Update -> {
                     currencyCache.apply {
                         clearAllCurrencies()
-                        setLastUpdateDateStamp(params.currentTimeStamp)
                     }
                 }
             }
@@ -46,6 +51,7 @@ class CurrencyRepositoryImpl(
                         },
                     )
                 }.let {
+                    lastUpdateDateStamp = 0
                     currencyCache.saveCurrencies(it)
                     it
                 }
@@ -74,7 +80,7 @@ class CurrencyRepositoryImpl(
         }
     }
 
-    override suspend fun getLastUpdateDateStamp(): Long? {
-        return currencyCache.getLastUpdateDateStamp()
+    override suspend fun logWorkManagerTasks(task: String) {
+        currencyCache.logWorkManagerTasks(task)
     }
 }

@@ -10,3 +10,5 @@ fun Long?.ifNullOrZero(action: () -> Long): Long {
     if (this == 0L) return action()
     return this
 }
+
+fun Long?.orZero() = this ?: 0L

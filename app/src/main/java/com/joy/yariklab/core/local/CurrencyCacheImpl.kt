@@ -6,13 +6,18 @@ import com.joy.yariklab.core.cache.db.entity.CurrencyLocal
 import com.joy.yariklab.core.cache.db.entity.RateLocal
 import com.joy.yariklab.core.cache.keyvalue.AppSettings
 import com.joy.yariklab.core.data.model.Currency
-import com.joy.yariklab.toolskit.nullIfZero
 
 class CurrencyCacheImpl(
     private val appSettings: AppSettings,
     private val currencyDao: CurrencyDao,
     private val rateDao: RateDao,
 ): CurrencyCache {
+
+    override var lastUpdateDateStamp: Long?
+        get() = appSettings.currenciesLastUpdateDateStamp
+        set(value) {
+            appSettings.currenciesLastUpdateDateStamp = requireNotNull(value)
+        }
 
     override suspend fun saveCurrencies(currencies: List<Currency>) {
         currencies.forEach { currency ->
@@ -61,11 +66,7 @@ class CurrencyCacheImpl(
         }
     }
 
-    override suspend fun getLastUpdateDateStamp(): Long? {
-        return appSettings.currenciesLastUpdateDateStamp.nullIfZero()
-    }
-
-    override suspend fun setLastUpdateDateStamp(timeStamp: Long) {
-        appSettings.currenciesLastUpdateDateStamp = timeStamp
+    override suspend fun logWorkManagerTasks(task: String) {
+        appSettings.workManagerTasks += task
     }
 }
