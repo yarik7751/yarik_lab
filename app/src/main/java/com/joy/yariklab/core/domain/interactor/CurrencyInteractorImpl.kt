@@ -4,6 +4,7 @@ import com.joy.yariklab.core.data.model.CacheUpdateDataParams
 import com.joy.yariklab.core.data.model.Currency
 import com.joy.yariklab.core.data.model.CurrencyDetails
 import com.joy.yariklab.core.domain.repository.CurrencyRepository
+import kotlinx.coroutines.flow.Flow
 
 private const val MAX_TIME_DIFF_FOR_DATA_UPDATE = 1000 * 60 * 60 * 12
 
@@ -11,15 +12,18 @@ class CurrencyInteractorImpl(
     private val currencyRepository: CurrencyRepository,
 ): CurrencyInteractor {
 
-    // TODO must be tryToUpdate
-    override suspend fun getCurrencies(): List<Currency> {
+    override suspend fun subscribeOnCurrencies(): Flow<List<Currency>> {
+        return currencyRepository.subscribeOnCurrencies()
+    }
+
+    override suspend fun tryToUpdateCurrencies() {
         val isNeedToUpdateCurrencyCache = isNeedToUpdateCurrencyCache()
         val params = when {
             isNeedToUpdateCurrencyCache -> CacheUpdateDataParams.Update(System.currentTimeMillis())
             else -> CacheUpdateDataParams.Leave
         }
 
-        return currencyRepository.getCurrencies(params)
+        currencyRepository.tryToUpdateCurrencies(params)
     }
 
     override suspend fun getCurrencyByCode(code: String): CurrencyDetails {

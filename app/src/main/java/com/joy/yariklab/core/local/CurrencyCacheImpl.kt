@@ -6,6 +6,8 @@ import com.joy.yariklab.core.cache.db.entity.CurrencyLocal
 import com.joy.yariklab.core.cache.db.entity.RateLocal
 import com.joy.yariklab.core.cache.keyvalue.AppSettings
 import com.joy.yariklab.core.data.model.Currency
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class CurrencyCacheImpl(
     private val appSettings: AppSettings,
@@ -18,6 +20,26 @@ class CurrencyCacheImpl(
         set(value) {
             appSettings.currenciesLastUpdateDateStamp = requireNotNull(value)
         }
+
+    override suspend fun subscribeOnCurrencies(): Flow<List<Currency>> {
+        return currencyDao.subscribeOnCurrencies().map { currencies ->
+            currencies.map { currencyLocal ->
+                val rates = rateDao.getRatesByCurrencyId(currencyLocal.id).map { rateLocal ->
+                    Currency.Rate(
+                        code = rateLocal.code,
+                        currency = rateLocal.currency,
+                        mid = rateLocal.mid,
+                    )
+                }
+                Currency(
+                    effectiveDate = currencyLocal.effectiveDate,
+                    no = currencyLocal.no,
+                    rates = rates,
+                    table = currencyLocal.table,
+                )
+            }
+        }
+    }
 
     override suspend fun saveCurrencies(currencies: List<Currency>) {
         currencies.forEach { currency ->

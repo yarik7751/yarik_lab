@@ -13,7 +13,7 @@ class CheckCurrencyDataWorker(
 
     override suspend fun doWork(): Result {
         currencyInteractor.apply {
-            getCurrencies()
+            tryToUpdateCurrencies()
             logWorkManagerTasks("Current time: ${System.currentTimeMillis()}")
         }
         return Result.success()

@@ -7,6 +7,7 @@ import com.joy.yariklab.core.data.model.Currency
 import com.joy.yariklab.core.data.model.CurrencyDetails
 import com.joy.yariklab.core.domain.repository.CurrencyRepository
 import com.joy.yariklab.core.local.CurrencyCache
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 private const val DEFAULT_LAST_AMOUNT = 6
@@ -23,8 +24,12 @@ class CurrencyRepositoryImpl(
             currencyCache.lastUpdateDateStamp = value
         }
 
-    override suspend fun getCurrencies(params: CacheUpdateDataParams): List<Currency> {
-        return withContext(dispatchersProvider.background()) {
+    override suspend fun subscribeOnCurrencies(): Flow<List<Currency>> {
+        return currencyCache.subscribeOnCurrencies()
+    }
+
+    override suspend fun tryToUpdateCurrencies(params: CacheUpdateDataParams) {
+        withContext(dispatchersProvider.background()) {
             when(params) {
                 CacheUpdateDataParams.Leave -> {
                     // none
@@ -53,7 +58,6 @@ class CurrencyRepositoryImpl(
                 }.let {
                     lastUpdateDateStamp = 0
                     currencyCache.saveCurrencies(it)
-                    it
                 }
             }
         }
