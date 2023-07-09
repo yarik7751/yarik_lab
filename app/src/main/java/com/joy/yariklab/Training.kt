@@ -11,14 +11,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
-data class UsersRow(
-    val id: Int,
-    val names: List<String>,
-)
 
 fun main() {
     // TestExpl.yarikMain()
-    val cache = InMemoryCache()
+    val cache = InMemoryCache<Int, String>()
 
     val scope = CoroutineScope(Job())
 
