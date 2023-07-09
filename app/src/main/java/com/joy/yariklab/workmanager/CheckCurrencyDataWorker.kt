@@ -12,10 +12,11 @@ class CheckCurrencyDataWorker(
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        currencyInteractor.apply {
+        // TODO with in-memory cache it is impossible
+        /*currencyInteractor.apply {
             tryToUpdateCurrencies()
             logWorkManagerTasks("Current time: ${System.currentTimeMillis()}")
-        }
+        }*/
         return Result.success()
     }
 }
