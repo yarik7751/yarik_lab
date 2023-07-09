@@ -34,7 +34,7 @@ class InMemoryCache<Key, Value>(
         }
     }
 
-    suspend fun removeName(
+    suspend fun remove(
         key: Key,
         data: Value,
     ) {
@@ -50,7 +50,7 @@ class InMemoryCache<Key, Value>(
         }
     }
 
-    suspend fun remove(key: Key) {
+    suspend fun removeByKey(key: Key) {
         mutex.withLock {
             val value = getMutableMap()
             value.remove(key)

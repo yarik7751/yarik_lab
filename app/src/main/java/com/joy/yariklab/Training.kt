@@ -45,9 +45,9 @@ fun main() {
 
                         delay(100)
 
-                        removeName(2, "Vova")
-                        removeName(2, "Zuzya")
-                        remove(2)
+                        remove(2, "Vova")
+                        remove(2, "Zuzya")
+                        removeByKey(2)
                     }
                 }
             }
@@ -61,7 +61,7 @@ fun main() {
                         delay(50)
 
                         add(2, "Zuzya")
-                        removeName(1, "Yarik")
+                        remove(1, "Yarik")
                     }
                 }
             }
