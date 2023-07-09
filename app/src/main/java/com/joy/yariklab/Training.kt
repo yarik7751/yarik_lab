@@ -1,76 +1,15 @@
 package com.joy.yariklab
 
+import com.joy.yariklab.core.cache.InMemoryCache
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-
-class Users {
-
-    private val mutex = Mutex()
-
-    private val _namesFlow = MutableStateFlow<Map<Int, List<String>>>(hashMapOf())
-    private val namesFlow: Flow<Map<Int, List<String>>> = _namesFlow.asStateFlow()
-
-    suspend fun addName(
-        id: Int,
-        name: String,
-    ) {
-        mutex.withLock {
-            val value = getMutableMap()
-            val names = value[id].orEmpty()
-            value[id] = names.plus(name)
-            _namesFlow.emit(value)
-        }
-    }
-
-    suspend fun removeName(
-        id: Int,
-        name: String,
-    ) {
-        mutex.withLock {
-            val value = getMutableMap()
-            val names = value[id].orEmpty().filter { it != name }
-            if (names.isEmpty()) {
-                value.remove(id)
-            } else {
-                value[id] = names
-            }
-            _namesFlow.emit(value)
-        }
-    }
-
-    suspend fun remove(id: Int) {
-        mutex.withLock {
-            val value = getMutableMap()
-            value.remove(id)
-            _namesFlow.emit(value)
-        }
-    }
-
-    fun subscribeOn(id: Int): Flow<UsersRow> = namesFlow.map {
-        UsersRow(
-            id = id,
-            names = it[id].orEmpty(),
-        )
-    }.distinctUntilChanged()
-
-    private fun getMutableMap(): MutableMap<Int, List<String>> {
-        return _namesFlow.value.toMutableMap()
-    }
-}
 
 data class UsersRow(
     val id: Int,
@@ -79,19 +18,19 @@ data class UsersRow(
 
 fun main() {
     // TestExpl.yarikMain()
-    val users = Users()
+    val cache = InMemoryCache()
 
     val scope = CoroutineScope(Job())
 
     val job1 = scope.launch {
-        users.subscribeOn(1)
+        cache.subscribeOn(1)
             .collect {
                 println(it)
             }
     }
 
     val job2 = scope.launch {
-        users.subscribeOn(2)
+        cache.subscribeOn(2)
             .collect {
                 // println(it)
             }
@@ -101,7 +40,7 @@ fun main() {
         coroutineScope {
             val deferred1 = async {
                 withContext(Dispatchers.IO) {
-                    users.apply {
+                    cache.apply {
                         addName(1, "Yarik")
                         addName(1, "Vasya")
                         delay(100)
@@ -119,7 +58,7 @@ fun main() {
 
             val deferred2 = async {
                 withContext(Dispatchers.IO) {
-                    users.apply {
+                    cache.apply {
                         addName(2, "Rzora")
                         addName(2, "Vova")
 
