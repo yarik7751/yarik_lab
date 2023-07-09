@@ -58,6 +58,10 @@ class InMemoryCache<Key, Value>(
         }
     }
 
+    suspend fun replaceAll(newData: Map<Key, List<Value>>) {
+        _namesFlow.emit(newData)
+    }
+
     fun subscribeOn(key: Key): Flow<UsersRow<Key, Value>> = namesFlow.map {
         UsersRow(
             key = key,
