@@ -1,19 +1,18 @@
 package com.joy.yariklab.core.local
 
-import com.joy.yariklab.core.cache.db.dao.CurrencyDao
-import com.joy.yariklab.core.cache.db.dao.RateDao
-import com.joy.yariklab.core.cache.db.entity.CurrencyLocal
-import com.joy.yariklab.core.cache.db.entity.RateLocal
+import com.joy.yariklab.core.cache.InMemoryCache
 import com.joy.yariklab.core.cache.keyvalue.AppSettings
 import com.joy.yariklab.core.data.model.Currency
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class CurrencyCacheImpl(
     private val appSettings: AppSettings,
-    private val currencyDao: CurrencyDao,
-    private val rateDao: RateDao,
 ): CurrencyCache {
+
+    private val stubKey = Any()
+    private val inMemoryCache = InMemoryCache<Any, Currency>()
 
     override var lastUpdateDateStamp: Long?
         get() = appSettings.currenciesLastUpdateDateStamp
@@ -22,70 +21,21 @@ class CurrencyCacheImpl(
         }
 
     override suspend fun subscribeOnCurrencies(): Flow<List<Currency>> {
-        return currencyDao.subscribeOnCurrencies().map { currencies ->
-            currencies.map { currencyLocal ->
-                val rates = rateDao.getRatesByCurrencyId(currencyLocal.id).map { rateLocal ->
-                    Currency.Rate(
-                        code = rateLocal.code,
-                        currency = rateLocal.currency,
-                        mid = rateLocal.mid,
-                    )
-                }
-                Currency(
-                    effectiveDate = currencyLocal.effectiveDate,
-                    no = currencyLocal.no,
-                    rates = rates,
-                    table = currencyLocal.table,
-                )
-            }
-        }
+        return inMemoryCache.subscribeOn(stubKey).map { it.values }
     }
 
     override suspend fun saveCurrencies(currencies: List<Currency>) {
-        currencies.forEach { currency ->
-            val currencyId = currencyDao.insert(
-                CurrencyLocal(
-                    id = 0,
-                    effectiveDate = currency.effectiveDate,
-                    no = currency.no,
-                    table = currency.table,
-                )
-            )
-
-            currency.rates.forEach { rate ->
-                rateDao.insert(
-                    RateLocal(
-                        id = 0,
-                        currencyId = currencyId,
-                        code = rate.code,
-                        currency = rate.currency,
-                        mid = rate.mid,
-                    )
-                )
-            }
+        currencies.forEach {
+            inMemoryCache.add(stubKey, it)
         }
     }
 
     override suspend fun clearAllCurrencies() {
-        currencyDao.deleteAll()
+        inMemoryCache.clearAll()
     }
 
     override suspend fun getCurrencies(): List<Currency> {
-        return currencyDao.getAllCurrencies().map { currencyLocal ->
-            val rates = rateDao.getRatesByCurrencyId(currencyLocal.id).map { rateLocal ->
-                Currency.Rate(
-                    code = rateLocal.code,
-                    currency = rateLocal.currency,
-                    mid = rateLocal.mid,
-                )
-            }
-            Currency(
-                effectiveDate = currencyLocal.effectiveDate,
-                no = currencyLocal.no,
-                rates = rates,
-                table = currencyLocal.table,
-            )
-        }
+        return inMemoryCache.subscribeOn(stubKey).map { it.values }.first()
     }
 
     override suspend fun logWorkManagerTasks(task: String) {

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-data class UsersRow<Key, Value>(
+data class DataRow<Key, Value>(
     val key: Key,
     val values: List<Value>,
 )
@@ -22,7 +22,7 @@ class InMemoryCache<Key, Value>(
     private val _namesFlow = MutableStateFlow(startValue)
     private val namesFlow: Flow<Map<Key, List<Value>>> = _namesFlow.asStateFlow()
 
-    suspend fun addName(
+    suspend fun add(
         key: Key,
         data: Value,
     ) {
@@ -62,8 +62,12 @@ class InMemoryCache<Key, Value>(
         _namesFlow.emit(newData)
     }
 
-    fun subscribeOn(key: Key): Flow<UsersRow<Key, Value>> = namesFlow.map {
-        UsersRow(
+    suspend fun clearAll() {
+        _namesFlow.emit(hashMapOf())
+    }
+
+    fun subscribeOn(key: Key): Flow<DataRow<Key, Value>> = namesFlow.map {
+        DataRow(
             key = key,
             values = it[key].orEmpty(),
         )

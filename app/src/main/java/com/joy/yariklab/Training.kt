@@ -37,11 +37,11 @@ fun main() {
             val deferred1 = async {
                 withContext(Dispatchers.IO) {
                     cache.apply {
-                        addName(1, "Yarik")
-                        addName(1, "Vasya")
+                        add(1, "Yarik")
+                        add(1, "Vasya")
                         delay(100)
-                        addName(1, "Dima")
-                        addName(1, "Oleg")
+                        add(1, "Dima")
+                        add(1, "Oleg")
 
                         delay(100)
 
@@ -55,12 +55,12 @@ fun main() {
             val deferred2 = async {
                 withContext(Dispatchers.IO) {
                     cache.apply {
-                        addName(2, "Rzora")
-                        addName(2, "Vova")
+                        add(2, "Rzora")
+                        add(2, "Vova")
 
                         delay(50)
 
-                        addName(2, "Zuzya")
+                        add(2, "Zuzya")
                         removeName(1, "Yarik")
                     }
                 }

@@ -89,8 +89,6 @@ val appModule = module {
     single<CurrencyCache> {
         CurrencyCacheImpl(
             appSettings = get(),
-            currencyDao = get(),
-            rateDao = get(),
         )
     }
 

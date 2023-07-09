@@ -9,7 +9,6 @@ import com.joy.yariklab.core.domain.interactor.CurrencyInteractor
 import com.joy.yariklab.features.currencieslist.CurrenciesListViewModel.Event
 import com.joy.yariklab.features.currencieslist.CurrenciesListViewModel.ViewState
 import com.joy.yariklab.features.currencieslist.model.CurrencyUi
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -72,7 +71,7 @@ class CurrenciesListViewModel(
 
     fun onRefreshClick() {
         viewModelScope.launch {
-            updateCurrencies(currencyInteractor.subscribeOnCurrencies().first())
+            currencyInteractor.tryToUpdateCurrencies()
         }
     }
 
