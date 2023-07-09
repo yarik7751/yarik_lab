@@ -56,7 +56,9 @@ class CurrencyRepositoryImpl(
                         },
                     )
                 }.let {
-                    lastUpdateDateStamp = 0
+                    if (params is CacheUpdateDataParams.Update) {
+                        lastUpdateDateStamp = params.currentTimeStamp
+                    }
                     currencyCache.saveCurrencies(it)
                 }
             }

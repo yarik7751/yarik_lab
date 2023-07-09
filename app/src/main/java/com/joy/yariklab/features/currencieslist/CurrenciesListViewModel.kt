@@ -28,7 +28,14 @@ class CurrenciesListViewModel(
     }
 
     init {
+        initData()
         subscribeOnCurrencies()
+    }
+
+    private fun initData() {
+        viewModelScope.launch {
+            currencyInteractor.tryToUpdateCurrencies()
+        }
     }
 
     private fun subscribeOnCurrencies() {
@@ -45,15 +52,15 @@ class CurrenciesListViewModel(
         reduce {
             it.copy(isLoading = true)
         }
-        currencies.last().rates.map { rate ->
+        currencies.lastOrNull()?.rates.orEmpty().map { rate ->
             CurrencyUi(
                 code = rate.code,
                 title = rate.currency,
             )
-        }.sortedBy { it.code }.let { currencies ->
+        }.sortedBy { it.code }.let { currenciesUi ->
             reduce {
                 it.copy(
-                    currencies = currencies
+                    currencies = currenciesUi,
                 )
             }
         }
