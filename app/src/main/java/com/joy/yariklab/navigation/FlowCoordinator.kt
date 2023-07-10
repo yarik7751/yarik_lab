@@ -9,6 +9,10 @@ interface FlowCoordinator {
     fun goToCurrenciesList()
 
     fun goToCurrencyDetails(currencyCode: String)
+
+    fun goToMusic()
+
+    fun goToWeather()
 }
 
 class FlowCoordinatorImpl(
@@ -28,6 +32,18 @@ class FlowCoordinatorImpl(
     override fun goToCurrencyDetails(currencyCode: String) {
         navController.navigate(
             route = "${Navigation.CurrenciesDetails.destination}/$currencyCode",
+        )
+    }
+
+    override fun goToMusic() {
+        navController.navigate(
+            route = Navigation.Music.destination
+        )
+    }
+
+    override fun goToWeather() {
+        navController.navigate(
+            route = Navigation.Weather.destination
         )
     }
 }
