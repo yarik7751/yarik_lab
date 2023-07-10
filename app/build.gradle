@@ -82,10 +82,9 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:$work_version"
     implementation "io.insert-koin:koin-androidx-workmanager:3.4.2"
 
-    def exo_player_version = "2.19.0"
-    implementation "com.google.android.exoplayer:exoplayer:$exo_player_version"
-    implementation "com.google.android.exoplayer:exoplayer-core:$exo_player_version"
-    implementation "com.google.android.exoplayer:exoplayer-dash:$exo_player_version"
+    def exo_player_version = "1.1.0"
+    implementation "androidx.media3:media3-exoplayer:$exo_player_version"
+    implementation "androidx.media3:media3-exoplayer-dash:$exo_player_version"
 
     testImplementation 'junit:junit:4.13.2'
 
