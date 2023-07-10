@@ -4,15 +4,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.joy.yariklab.archkit.ViewStateDelegate
 import com.joy.yariklab.archkit.ViewStateDelegateImpl
+import com.joy.yariklab.archkit.safeLaunch
 import com.joy.yariklab.core.domain.interactor.CurrencyInteractor
+import com.joy.yariklab.features.common.ErrorEmitter
 import com.joy.yariklab.features.curencydetails.CurrencyDetailsViewModel.Event
 import com.joy.yariklab.features.curencydetails.CurrencyDetailsViewModel.ViewState
 import com.joy.yariklab.features.curencydetails.model.CurrencyDetailsUi
-import kotlinx.coroutines.launch
 
 class CurrencyDetailsViewModel(
     private val currencyCode: String,
     private val currencyInteractor: CurrencyInteractor,
+    private val errorEmitter: ErrorEmitter,
 ) : ViewModel(), ViewStateDelegate<ViewState, Event> by ViewStateDelegateImpl(ViewState()) {
 
     data class ViewState(
@@ -23,7 +25,7 @@ class CurrencyDetailsViewModel(
     sealed interface Event
 
     init {
-        viewModelScope.launch {
+        viewModelScope.safeLaunch(errorEmitter::emit) {
             val currencyDetailsUi = currencyInteractor.getCurrencyByCode(currencyCode).let { currencyDetails ->
                 CurrencyDetailsUi(
                     code = currencyDetails.code,

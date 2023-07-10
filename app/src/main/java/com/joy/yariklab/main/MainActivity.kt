@@ -12,8 +12,12 @@ import com.joy.yariklab.navigation.Navigation
 import com.joy.yariklab.navigation.bottomnavmenu.BottomNavigationMenu
 import com.joy.yariklab.navigation.buildNavigation
 import com.joy.yariklab.ui.theme.YariklabTheme
+import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: MainViewModel by inject()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -35,5 +39,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+
     }
 }
