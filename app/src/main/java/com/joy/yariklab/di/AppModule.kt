@@ -13,9 +13,13 @@ import com.joy.yariklab.core.cache.keyvalue.AppSettingsImpl
 import com.joy.yariklab.core.data.CurrencyRepositoryImpl
 import com.joy.yariklab.core.domain.interactor.CurrencyInteractor
 import com.joy.yariklab.core.domain.interactor.CurrencyInteractorImpl
+import com.joy.yariklab.core.domain.interactor.MusicInteractor
+import com.joy.yariklab.core.domain.interactor.MusicInteractorImpl
 import com.joy.yariklab.core.domain.repository.CurrencyRepository
 import com.joy.yariklab.core.local.CurrencyCache
 import com.joy.yariklab.core.local.CurrencyCacheImpl
+import com.joy.yariklab.core.provider.MusicProvider
+import com.joy.yariklab.core.provider.MusicProviderImpl
 import com.joy.yariklab.features.curencydetails.CurrencyDetailsViewModel
 import com.joy.yariklab.features.currencieslist.CurrenciesListViewModel
 import com.joy.yariklab.features.music.MusicViewModel
@@ -46,7 +50,9 @@ val appModule = module {
         )
     }
     viewModel {
-        MusicViewModel()
+        MusicViewModel(
+            musicInteractor = get(),
+        )
     }
     viewModel {
         WeatherViewModel()
@@ -94,6 +100,12 @@ val appModule = module {
         )
     }
 
+    single<MusicInteractor> {
+        MusicInteractorImpl(
+            musicProvider = get(),
+        )
+    }
+
     single<CurrencyCache> {
         CurrencyCacheImpl(
             appSettings = get(),
@@ -112,5 +124,9 @@ val appModule = module {
 
     single {
         get<CurrenciesDatabase>().rateDao()
+    }
+
+    single<MusicProvider> {
+        MusicProviderImpl()
     }
 }
