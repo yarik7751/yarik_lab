@@ -9,6 +9,7 @@ import androidx.compose.material.Surface
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.joy.yariklab.navigation.Navigation
+import com.joy.yariklab.navigation.bottomnavmenu.BottomNavigationMenu
 import com.joy.yariklab.navigation.buildNavigation
 import com.joy.yariklab.ui.theme.YariklabTheme
 

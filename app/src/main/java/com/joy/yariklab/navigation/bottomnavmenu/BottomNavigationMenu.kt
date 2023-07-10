@@ -1,4 +1,4 @@
-package com.joy.yariklab.main
+package com.joy.yariklab.navigation.bottomnavmenu
 
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -12,11 +12,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.joy.yariklab.R
+import com.joy.yariklab.navigation.FlowCoordinator
+import com.joy.yariklab.navigation.FlowCoordinatorImpl
 
 @Composable
 fun BottomNavigationMenu(navController: NavController) {
     val items = listOf(
-        BottomNavigationItem.Home,
+        BottomNavigationItem.Music,
         BottomNavigationItem.Currency,
         BottomNavigationItem.Weather,
     )
@@ -25,6 +27,7 @@ fun BottomNavigationMenu(navController: NavController) {
         backgroundColor = colorResource(id = R.color.teal_200),
         contentColor = Color.Black
     ) {
+        val flowCoordinator: FlowCoordinator = FlowCoordinatorImpl(navController)
         val navBackStackEntry = navController.currentBackStackEntryAsState().value
         val currentRoute = navBackStackEntry?.destination?.route
 
@@ -42,7 +45,11 @@ fun BottomNavigationMenu(navController: NavController) {
                 unselectedContentColor = Color.Black.copy(0.4f),
                 alwaysShowLabel = true,
                 onClick = {
-
+                    when (item) {
+                        BottomNavigationItem.Currency -> flowCoordinator.goToCurrenciesList()
+                        BottomNavigationItem.Music -> flowCoordinator.goToMusic()
+                        BottomNavigationItem.Weather -> flowCoordinator.goToWeather()
+                    }
                 },
             )
         }

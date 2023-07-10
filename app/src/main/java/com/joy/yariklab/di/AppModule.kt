@@ -18,6 +18,8 @@ import com.joy.yariklab.core.local.CurrencyCache
 import com.joy.yariklab.core.local.CurrencyCacheImpl
 import com.joy.yariklab.features.curencydetails.CurrencyDetailsViewModel
 import com.joy.yariklab.features.currencieslist.CurrenciesListViewModel
+import com.joy.yariklab.features.music.MusicViewModel
+import com.joy.yariklab.features.weather.WeatherViewModel
 import com.joy.yariklab.workmanager.CheckCurrencyDataWorker
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.worker
@@ -42,6 +44,12 @@ val appModule = module {
             currencyCode = it.get(),
             currencyInteractor = get(),
         )
+    }
+    viewModel {
+        MusicViewModel()
+    }
+    viewModel {
+        WeatherViewModel()
     }
 
     single {

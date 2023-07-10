@@ -1,4 +1,4 @@
-package com.joy.yariklab.main
+package com.joy.yariklab.navigation.bottomnavmenu
 
 import androidx.annotation.DrawableRes
 import com.joy.yariklab.R
@@ -10,11 +10,10 @@ sealed class BottomNavigationItem(
     val rote: String,
 ) {
 
-    object Home : BottomNavigationItem(
-        title = "Home",
-        icon = R.drawable.ic_home,
-        // TODO must be route
-        rote = "",
+    object Music : BottomNavigationItem(
+        title = "Music",
+        icon = R.drawable.ic_music_note,
+        rote = Navigation.Music.destination,
     )
 
     object Currency : BottomNavigationItem(
@@ -26,7 +25,6 @@ sealed class BottomNavigationItem(
     object Weather : BottomNavigationItem(
         title = "Weather",
         icon = R.drawable.ic_weather,
-        // TODO must be route
-        rote = "",
+        rote = Navigation.Weather.destination,
     )
 }
