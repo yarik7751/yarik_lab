@@ -7,4 +7,8 @@ sealed class Navigation(val destination: String) {
     object CurrenciesList : Navigation("CurrenciesList")
 
     object CurrenciesDetails : Navigation("CurrenciesDetails")
+
+    object Music : Navigation("Music")
+
+    object Weather : Navigation("Weather")
 }

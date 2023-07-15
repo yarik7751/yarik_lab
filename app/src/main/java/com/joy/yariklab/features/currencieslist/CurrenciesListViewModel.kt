@@ -4,17 +4,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.joy.yariklab.archkit.ViewStateDelegate
 import com.joy.yariklab.archkit.ViewStateDelegateImpl
+import com.joy.yariklab.archkit.safeLaunch
 import com.joy.yariklab.core.data.model.Currency
 import com.joy.yariklab.core.domain.interactor.CurrencyInteractor
+import com.joy.yariklab.features.common.ErrorEmitter
 import com.joy.yariklab.features.currencieslist.CurrenciesListViewModel.Event
 import com.joy.yariklab.features.currencieslist.CurrenciesListViewModel.ViewState
 import com.joy.yariklab.features.currencieslist.model.CurrencyUi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class CurrenciesListViewModel(
     private val currencyInteractor: CurrencyInteractor,
+    private val errorEmitter: ErrorEmitter,
 ) : ViewModel(), ViewStateDelegate<ViewState, Event> by ViewStateDelegateImpl(ViewState()) {
 
     data class ViewState(
@@ -32,7 +36,7 @@ class CurrenciesListViewModel(
     }
 
     private fun initData() {
-        viewModelScope.launch {
+        viewModelScope.safeLaunch(errorEmitter::emit) {
             currencyInteractor.tryToUpdateCurrencies()
         }
     }
@@ -70,8 +74,8 @@ class CurrenciesListViewModel(
     }
 
     fun onRefreshClick() {
-        viewModelScope.launch {
-            currencyInteractor.tryToUpdateCurrencies()
+        viewModelScope.safeLaunch(errorEmitter::emit) {
+            updateCurrencies(currencyInteractor.subscribeOnCurrencies().first())
         }
     }
 

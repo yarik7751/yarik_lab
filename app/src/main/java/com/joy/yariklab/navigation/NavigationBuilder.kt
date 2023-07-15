@@ -8,6 +8,8 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.joy.yariklab.features.curencydetails.CurrencyDetailsScreen
 import com.joy.yariklab.features.currencieslist.CurrenciesListScreen
+import com.joy.yariklab.features.music.MusicScreen
+import com.joy.yariklab.features.weather.WeatherScreen
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -29,6 +31,7 @@ fun NavGraphBuilder.buildNavigation(navController: NavController) {
                 flowCoordinator = flowCoordinator,
             )
         }
+
         composable(
             route = "${Navigation.CurrenciesDetails.destination}/{$ARGS_CURRENCY_CODE}",
             arguments = listOf(
@@ -42,6 +45,24 @@ fun NavGraphBuilder.buildNavigation(navController: NavController) {
                 viewModel = koinViewModel(
                     parameters = { parametersOf(currencyCode) }
                 ),
+                flowCoordinator = flowCoordinator,
+            )
+        }
+
+        composable(
+            route = Navigation.Music.destination
+        ) {
+            MusicScreen(
+                viewModel = koinViewModel(),
+                flowCoordinator = flowCoordinator,
+            )
+        }
+
+        composable(
+            route = Navigation.Weather.destination
+        ) {
+            WeatherScreen(
+                viewModel = koinViewModel(),
                 flowCoordinator = flowCoordinator,
             )
         }
