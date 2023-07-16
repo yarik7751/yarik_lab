@@ -61,6 +61,7 @@ val appModule = module {
         MusicViewModel(
             musicInteractor = get(),
             errorEmitter = get(),
+            exoPlayer = get(),
         )
     }
     viewModel {

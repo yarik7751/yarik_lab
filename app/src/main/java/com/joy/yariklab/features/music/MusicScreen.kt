@@ -28,13 +28,11 @@ import com.joy.yariklab.R
 import com.joy.yariklab.features.music.model.MusicSongUi
 import com.joy.yariklab.features.music.model.SongStatus
 import com.joy.yariklab.navigation.FlowCoordinator
-import com.joy.yariklab.toolskit.EMPTY_STRING
 import com.joy.yariklab.ui.theme.Purple80
 import com.joy.yariklab.uikit.LabProgressBar
 import com.joy.yariklab.uikit.itemCountPreview
 import com.joy.yariklab.uikit.simplePadding
 import kotlinx.coroutines.flow.collectLatest
-
 
 @Composable
 fun MusicScreen(
@@ -69,7 +67,7 @@ fun MusicScreenPreview() {
             status = SongStatus.PAUSE,
             title = "Music title",
             subtitle = "Subtitle",
-            icon = EMPTY_STRING,
+            icon = null,
             minProcess = 0,
             maxProcess = 10000,
             currentProcess = 0,
