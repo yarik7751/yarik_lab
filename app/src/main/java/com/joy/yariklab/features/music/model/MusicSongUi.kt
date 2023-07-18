@@ -12,7 +12,6 @@ data class MusicSongUi(
     val minProcess: Long,
     val maxProcess: Long,
     val currentProcess: Long,
-    val isProgressVisible: Boolean,
 ) : Parcelable
 
 enum class SongStatus {

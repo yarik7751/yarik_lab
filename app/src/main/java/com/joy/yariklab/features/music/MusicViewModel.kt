@@ -52,7 +52,6 @@ class MusicViewModel(
                     maxProcess = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
                         ?.toLongOrNull() ?: 0,
                     currentProcess = 0,
-                    isProgressVisible = false,
                 )
             }
 

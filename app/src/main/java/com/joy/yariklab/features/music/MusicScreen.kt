@@ -86,7 +86,6 @@ fun MusicScreenPreview() {
             minProcess = 0,
             maxProcess = 10000,
             currentProcess = 0,
-            isProgressVisible = false,
             url = "https://console.firebase.google.com/",
         ).itemCountPreview(4),
     )
@@ -211,8 +210,6 @@ fun MusicItem(
                     )
                 }
             }
-
-            if (song.isProgressVisible.not()) return@Column
 
             Row(
                 modifier = Modifier
