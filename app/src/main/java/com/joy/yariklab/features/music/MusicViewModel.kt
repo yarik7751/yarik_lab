@@ -12,6 +12,7 @@ import com.joy.yariklab.features.music.MusicViewModel.Event
 import com.joy.yariklab.features.music.MusicViewModel.ViewState
 import com.joy.yariklab.features.music.model.MusicSongUi
 import com.joy.yariklab.features.music.model.SongStatus
+import com.joy.yariklab.features.player.model.PlayerCommand
 import com.joy.yariklab.toolskit.EMPTY_STRING
 import com.joy.yariklab.toolskit.parallelMap
 import kotlinx.coroutines.launch
@@ -28,7 +29,7 @@ class MusicViewModel(
     )
 
     sealed interface Event {
-        data class StartPalyer(val song: MusicSongUi) : Event
+        data class SendCommandToPlayer(val command: PlayerCommand) : Event
     }
 
     init {
@@ -41,7 +42,7 @@ class MusicViewModel(
                     BitmapFactory.decodeByteArray(pictureArray, 0, pictureArray.size)
                 }*/
                 MusicSongUi(
-                    status = SongStatus.PAUSE,
+                    status = SongStatus.FIRST,
                     title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
                         .orEmpty(),
                     subtitle = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
@@ -80,9 +81,40 @@ class MusicViewModel(
 
     fun onCheckNotificationPermission() {
         viewModelScope.launch {
-            viewState.value.songs.find { it.url == viewState.value.selectedUrl }?.let {
-                sendEvent(Event.StartPalyer(it))
+            var selectedSong: MusicSongUi? = null
+
+            val newSongs = viewState.value.songs.map { song ->
+                when (song.url) {
+                    viewState.value.selectedUrl -> {
+                        song.copy(status = changeSongStatus(song.status)).apply {
+                            selectedSong = this
+                        }
+                    }
+                    else -> song.copy(status = SongStatus.PAUSE)
+                }
             }
+
+            this@MusicViewModel.reduce {
+                it.copy(songs = newSongs)
+            }
+
+            selectedSong?.let {
+                val command = when (it.status) {
+                    SongStatus.PLAY-> PlayerCommand.Play(it)
+                    SongStatus.PAUSE -> PlayerCommand.Pause
+                    SongStatus.FIRST -> PlayerCommand.Nothing
+                }
+
+                sendEvent(Event.SendCommandToPlayer(command))
+            }
+        }
+    }
+
+    private fun changeSongStatus(currentStatus: SongStatus): SongStatus {
+        return when (currentStatus) {
+            SongStatus.PLAY -> SongStatus.PAUSE
+            SongStatus.PAUSE,
+            SongStatus.FIRST-> SongStatus.PLAY
         }
     }
 }

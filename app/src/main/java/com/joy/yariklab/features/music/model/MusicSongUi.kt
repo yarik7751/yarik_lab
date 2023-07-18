@@ -16,6 +16,7 @@ data class MusicSongUi(
 ) : Parcelable
 
 enum class SongStatus {
+    FIRST,
     PLAY,
     PAUSE,
 }

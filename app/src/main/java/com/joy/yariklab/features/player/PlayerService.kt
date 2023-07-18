@@ -14,6 +14,7 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.joy.yariklab.R
 import com.joy.yariklab.features.music.model.MusicSongUi
+import com.joy.yariklab.features.player.model.PlayerCommand
 import com.joy.yariklab.main.MainActivity
 import com.joy.yariklab.toolskit.getParcelableInstance
 
@@ -23,14 +24,14 @@ private const val PLAYER_NOTIFICATION_CHANNEL = "Player notifications"
 class PlayerService : Service(), Player.Listener {
 
     companion object {
-        private const val ARGS_SONG = "ARGS_SONG"
+        private const val ARGS_PLAYER_COMMAND = "ARGS_PLAYER_COMMAND"
 
         fun newIntent(
             context: Context,
-            song: MusicSongUi,
+            command: PlayerCommand,
         ): Intent {
             return Intent(context, PlayerService::class.java).apply {
-                putExtra(ARGS_SONG, song)
+                putExtra(ARGS_PLAYER_COMMAND, command)
             }
         }
     }
@@ -55,7 +56,30 @@ class PlayerService : Service(), Player.Listener {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        _song = intent.getParcelableInstance(ARGS_SONG, MusicSongUi::class.java)
+        val command = requireNotNull(
+            intent.getParcelableInstance(ARGS_PLAYER_COMMAND, PlayerCommand::class.java)
+        ) { "Player must receive the command!" }
+
+        when (command) {
+            PlayerCommand.Pause -> {
+                exoPlayer.pause()
+            }
+
+            is PlayerCommand.Play -> {
+                _song = command.song
+                playSong()
+            }
+
+            PlayerCommand.PlayAgain -> {
+                playSong()
+            }
+
+            PlayerCommand.Stop -> {
+                exoPlayer.stop()
+            }
+
+            PlayerCommand.Nothing -> {}
+        }
 
         createNotificationChannel()
         val pendingIntent = Intent(
@@ -74,15 +98,19 @@ class PlayerService : Service(), Player.Listener {
 
         startForeground(1, notification)
 
+        return START_NOT_STICKY
+    }
+
+    private fun playSong() {
         if (exoPlayer.isPlaying) {
             exoPlayer.stop()
         }
         val mediaItem = MediaItem.fromUri(song.url)
-        exoPlayer.setMediaItem(mediaItem)
-        exoPlayer.prepare()
-        exoPlayer.play()
-
-        return START_NOT_STICKY
+        exoPlayer.apply {
+            setMediaItem(mediaItem)
+            prepare()
+            play()
+        }
     }
 
     private fun createNotificationChannel() {
@@ -91,6 +119,7 @@ class PlayerService : Service(), Player.Listener {
             "Player notifications Channel",
             NotificationManager.IMPORTANCE_DEFAULT,
         )
+        serviceChannel.setSound(null, null)
         val manager = getSystemService(
             NotificationManager::class.java
         )
@@ -113,6 +142,7 @@ class PlayerService : Service(), Player.Listener {
     }
 
     override fun onDestroy() {
+        _exoPlayer?.release()
         _exoPlayer = null
         super.onDestroy()
     }

@@ -63,10 +63,10 @@ fun MusicScreen(
     LaunchedEffect(key1 = Unit) {
         viewModel.singleEvents.collectLatest { event ->
             when (event) {
-                is Event.StartPalyer -> {
+                is Event.SendCommandToPlayer -> {
                     val intent = PlayerService.newIntent(
                         context = context,
-                        song = event.song,
+                        command = event.command,
                     )
                     context.startForegroundService(intent)
                 }
@@ -156,6 +156,11 @@ fun MusicItem(
                         vertical = 8.dp,
                     ),
             ) {
+                val imageRes = when (song.status) {
+                    SongStatus.PLAY -> R.drawable.ic_pause_white
+                    SongStatus.PAUSE,
+                    SongStatus.FIRST-> R.drawable.ic_play_white
+                }
                 Image(
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -172,7 +177,7 @@ fun MusicItem(
                                 notificationPermissionState.launchPermissionRequest()
                             }
                         },
-                    painter = painterResource(id = R.drawable.ic_play_white),
+                    painter = painterResource(id = imageRes),
                     contentDescription = null,
                 )
 
