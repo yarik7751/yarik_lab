@@ -43,7 +43,38 @@ class MusicViewModel(
             playerObserver.subscribeOnPlayerState()
                 .onEach { state ->
                     when (state) {
-                        is PlayerState.End -> {}
+                        is PlayerState.End -> {
+                            var nextIndex = -1
+                            var selectedSong: MusicSongUi? = null
+                            val newSongs = stateValue.songs.mapIndexed { index, song ->
+                                when {
+                                    song.url == state.song.url -> {
+                                        nextIndex = index + 1
+                                        song.copy(status = SongStatus.UNSELECT)
+                                    }
+                                    index == nextIndex -> {
+                                        song.copy(status = changeSongStatus(song.status)).apply {
+                                            selectedSong = this
+                                        }
+                                    }
+                                    else -> song
+                                }
+                            }
+
+                            this@MusicViewModel.reduce {
+                                it.copy(songs = newSongs)
+                            }
+
+                            selectedSong?.let {
+                                val command = when (it.status) {
+                                    SongStatus.PLAY-> PlayerCommand.Play(it)
+                                    SongStatus.PAUSE -> PlayerCommand.Pause
+                                    SongStatus.UNSELECT -> PlayerCommand.Nothing
+                                }
+
+                                sendEvent(Event.SendCommandToPlayer(command))
+                            }
+                        }
                         is PlayerState.Other -> {}
                         is PlayerState.Pause -> {}
                         is PlayerState.Play -> {}
@@ -75,7 +106,7 @@ class MusicViewModel(
                     BitmapFactory.decodeByteArray(pictureArray, 0, pictureArray.size)
                 }*/
                 MusicSongUi(
-                    status = SongStatus.FIRST,
+                    status = SongStatus.UNSELECT,
                     title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
                         .orEmpty(),
                     subtitle = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
@@ -134,7 +165,7 @@ class MusicViewModel(
                 val command = when (it.status) {
                     SongStatus.PLAY-> PlayerCommand.Play(it)
                     SongStatus.PAUSE -> PlayerCommand.Pause
-                    SongStatus.FIRST -> PlayerCommand.Nothing
+                    SongStatus.UNSELECT -> PlayerCommand.Nothing
                 }
 
                 sendEvent(Event.SendCommandToPlayer(command))
@@ -146,7 +177,13 @@ class MusicViewModel(
         return when (currentStatus) {
             SongStatus.PLAY -> SongStatus.PAUSE
             SongStatus.PAUSE,
-            SongStatus.FIRST-> SongStatus.PLAY
+            SongStatus.UNSELECT-> SongStatus.PLAY
+        }
+    }
+
+    fun onPositionChanged(newPosition: Float) {
+        viewModelScope.launch {
+            sendEvent(Event.SendCommandToPlayer(PlayerCommand.ToPosition(newPosition)))
         }
     }
 }

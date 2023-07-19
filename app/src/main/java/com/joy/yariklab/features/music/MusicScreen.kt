@@ -129,11 +129,12 @@ fun MusicItem(
     song: MusicSongUi,
     viewModel: MusicViewModel,
 ) {
-    val notificationPermissionState = rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS) { check ->
-        if (check) {
-            viewModel.onCheckNotificationPermission()
+    val notificationPermissionState =
+        rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS) { check ->
+            if (check) {
+                viewModel.onCheckNotificationPermission()
+            }
         }
-    }
 
     Box(
         modifier = Modifier
@@ -158,7 +159,7 @@ fun MusicItem(
                 val imageRes = when (song.status) {
                     SongStatus.PLAY -> R.drawable.ic_pause_white
                     SongStatus.PAUSE,
-                    SongStatus.FIRST-> R.drawable.ic_play_white
+                    SongStatus.UNSELECT -> R.drawable.ic_play_white
                 }
                 Image(
                     modifier = Modifier
@@ -223,7 +224,9 @@ fun MusicItem(
                     modifier = Modifier
                         .fillMaxWidth(),
                     value = song.currentProcess,
-                    onValueChange = {},
+                    onValueChange = {
+                        viewModel.onPositionChanged(it)
+                    },
                     valueRange = 0F..100F,
                 )
             }

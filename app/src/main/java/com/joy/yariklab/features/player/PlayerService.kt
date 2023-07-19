@@ -116,6 +116,11 @@ class PlayerService : Service(), Player.Listener {
                 exoPlayer.stop()
             }
 
+            is PlayerCommand.ToPosition -> {
+                val positionInMills = (exoPlayer.duration * (command.position / 100F)).toLong()
+                exoPlayer.seekTo(positionInMills)
+            }
+
             PlayerCommand.Nothing -> {}
         }
 

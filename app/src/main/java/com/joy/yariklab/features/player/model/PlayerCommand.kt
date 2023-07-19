@@ -18,5 +18,8 @@ sealed interface PlayerCommand : Parcelable {
     object Stop : PlayerCommand
 
     @Parcelize
+    data class ToPosition(val position: Float) : PlayerCommand
+
+    @Parcelize
     object Nothing : PlayerCommand
 }
