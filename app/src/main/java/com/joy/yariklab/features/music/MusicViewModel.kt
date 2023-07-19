@@ -1,7 +1,6 @@
 package com.joy.yariklab.features.music
 
 import android.media.MediaMetadataRetriever
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.joy.yariklab.archkit.ViewStateDelegate
@@ -81,7 +80,6 @@ class MusicViewModel(
                         is PlayerState.Progress -> {
                             stateValue.songs.map { song ->
                                 if (song.url == state.song.url) {
-                                    Log.d("view_model_progress", "viewModel progress -> ${state.value}")
                                     song.copy(currentProcess = state.value)
                                 } else {
                                     song
@@ -153,7 +151,7 @@ class MusicViewModel(
                             selectedSong = this
                         }
                     }
-                    else -> song.copy(status = SongStatus.PAUSE)
+                    else -> song.copy(status = SongStatus.UNSELECT)
                 }
             }
 

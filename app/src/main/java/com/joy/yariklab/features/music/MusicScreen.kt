@@ -3,7 +3,6 @@
 package com.joy.yariklab.features.music
 
 import android.Manifest
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -212,7 +211,8 @@ fun MusicItem(
                 }
             }
 
-            Log.d("ui_progress", "ui progress -> ${song.currentProcess}")
+            if (song.status == SongStatus.UNSELECT) return@Column
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
