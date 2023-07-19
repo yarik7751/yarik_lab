@@ -9,9 +9,9 @@ data class MusicSongUi(
     val url: String,
     val title: String,
     val subtitle: String,
-    val minProcess: Long,
-    val maxProcess: Long,
-    val currentProcess: Long,
+    val minProcess: Float,
+    val maxProcess: Float,
+    val currentProcess: Float,
 ) : Parcelable
 
 enum class SongStatus {

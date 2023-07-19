@@ -9,14 +9,22 @@ import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import androidx.media3.common.MediaItem
-import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.joy.yariklab.R
 import com.joy.yariklab.features.music.model.MusicSongUi
 import com.joy.yariklab.features.player.model.PlayerCommand
+import com.joy.yariklab.features.player.model.PlayerState
+import com.joy.yariklab.features.player.observer.PlayerEmitter
 import com.joy.yariklab.main.MainActivity
 import com.joy.yariklab.toolskit.getParcelableInstance
+import com.joy.yariklab.toolskit.intervalTasks
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 
 private const val PLAYER_NOTIFICATION_CHANNEL = "Player notifications"
@@ -45,10 +53,36 @@ class PlayerService : Service(), Player.Listener {
     private val song: MusicSongUi
         get() = requireNotNull(_song) { "MusicSongUi must be initialized!" }
 
+    private val playerEmitter: PlayerEmitter by inject()
+
+    private var intervalCoroutineScope = CoroutineScope(Job() + Dispatchers.Main)
+    private var intervalFlow = intervalTasks(
+        initDelay = 1000,
+        delay = 1000,
+        isClosed = false,
+    )
+
     override fun onCreate() {
         super.onCreate()
         _exoPlayer = ExoPlayer.Builder(this).build()
         _exoPlayer?.addListener(this)
+
+        intervalCoroutineScope.launch {
+            intervalFlow.collect {
+                _exoPlayer?.let { exoPlayer ->
+                    val song = _song
+                    if (exoPlayer.isPlaying && song != null) {
+                        val percent = (exoPlayer.currentPosition.toFloat() / exoPlayer.duration.toFloat()) * 100F
+                        playerEmitter.send(
+                            PlayerState.Progress(
+                                value = percent,
+                                song = song,
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -66,8 +100,12 @@ class PlayerService : Service(), Player.Listener {
             }
 
             is PlayerCommand.Play -> {
-                _song = command.song
-                playSong()
+                if (_song?.url == command.song.url) {
+                    exoPlayer.play()
+                } else {
+                    _song = command.song
+                    playSong()
+                }
             }
 
             PlayerCommand.PlayAgain -> {
@@ -129,19 +167,21 @@ class PlayerService : Service(), Player.Listener {
     override fun onPlaybackStateChanged(playbackState: Int) {
         super.onPlaybackStateChanged(playbackState)
 
-        when (playbackState) {
-            Player.STATE_IDLE -> {}
-            Player.STATE_BUFFERING -> {}
-            Player.STATE_READY -> {}
-            Player.STATE_ENDED -> {}
+        if (playbackState == Player.STATE_READY) {
+            if (exoPlayer.playWhenReady) {
+                playerEmitter.send(PlayerState.Play(song))
+            } else {
+                playerEmitter.send(PlayerState.Pause(song))
+            }
+        } else if (playbackState == Player.STATE_ENDED) {
+            playerEmitter.send(PlayerState.End(song))
+        } else {
+            playerEmitter.send(PlayerState.Other(song))
         }
     }
 
-    override fun onPlayerError(error: PlaybackException) {
-        super.onPlayerError(error)
-    }
-
     override fun onDestroy() {
+        intervalCoroutineScope.cancel()
         _exoPlayer?.release()
         _exoPlayer = null
         super.onDestroy()

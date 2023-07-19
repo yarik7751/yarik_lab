@@ -3,6 +3,7 @@
 package com.joy.yariklab.features.music
 
 import android.Manifest
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -83,9 +84,9 @@ fun MusicScreenPreview() {
             status = SongStatus.PAUSE,
             title = "Music title",
             subtitle = "Subtitle",
-            minProcess = 0,
-            maxProcess = 10000,
-            currentProcess = 0,
+            minProcess = 0F,
+            maxProcess = 100F,
+            currentProcess = 0F,
             url = "https://console.firebase.google.com/",
         ).itemCountPreview(4),
     )
@@ -128,7 +129,6 @@ fun MusicItem(
     song: MusicSongUi,
     viewModel: MusicViewModel,
 ) {
-    val context = LocalContext.current
     val notificationPermissionState = rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS) { check ->
         if (check) {
             viewModel.onCheckNotificationPermission()
@@ -211,6 +211,7 @@ fun MusicItem(
                 }
             }
 
+            Log.d("ui_progress", "ui progress -> ${song.currentProcess}")
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -221,8 +222,9 @@ fun MusicItem(
                 Slider(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    value = 100F,
+                    value = song.currentProcess,
                     onValueChange = {},
+                    valueRange = 0F..100F,
                 )
             }
         }

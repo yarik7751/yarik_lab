@@ -1,6 +1,7 @@
 package com.joy.yariklab.features.music
 
 import android.media.MediaMetadataRetriever
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.joy.yariklab.archkit.ViewStateDelegate
@@ -13,13 +14,18 @@ import com.joy.yariklab.features.music.MusicViewModel.ViewState
 import com.joy.yariklab.features.music.model.MusicSongUi
 import com.joy.yariklab.features.music.model.SongStatus
 import com.joy.yariklab.features.player.model.PlayerCommand
+import com.joy.yariklab.features.player.model.PlayerState
+import com.joy.yariklab.features.player.observer.PlayerObserver
 import com.joy.yariklab.toolskit.EMPTY_STRING
 import com.joy.yariklab.toolskit.parallelMap
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class MusicViewModel(
     private val musicInteractor: MusicInteractor,
     private val errorEmitter: ErrorEmitter,
+    private val playerObserver: PlayerObserver,
 ) : ViewModel(), ViewStateDelegate<ViewState, Event> by ViewStateDelegateImpl(ViewState()) {
 
     data class ViewState(
@@ -33,6 +39,33 @@ class MusicViewModel(
     }
 
     init {
+        viewModelScope.launch {
+            playerObserver.subscribeOnPlayerState()
+                .onEach { state ->
+                    when (state) {
+                        is PlayerState.End -> {}
+                        is PlayerState.Other -> {}
+                        is PlayerState.Pause -> {}
+                        is PlayerState.Play -> {}
+                        is PlayerState.Progress -> {
+                            stateValue.songs.map { song ->
+                                if (song.url == state.song.url) {
+                                    Log.d("view_model_progress", "viewModel progress -> ${state.value}")
+                                    song.copy(currentProcess = state.value)
+                                } else {
+                                    song
+                                }
+                            }.let { songs ->
+                                reduce {
+                                    it.copy(songs = songs)
+                                }
+                            }
+                        }
+                    }
+                }
+                .launchIn(this)
+        }
+
         viewModelScope.safeLaunch(errorEmitter::emit) {
             val songs = musicInteractor.getSongs().parallelMap {
                 val mmr = MediaMetadataRetriever()
@@ -48,10 +81,10 @@ class MusicViewModel(
                     subtitle = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
                         .orEmpty(),
                     url = it,
-                    minProcess = 0,
+                    minProcess = 0F,
                     maxProcess = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                        ?.toLongOrNull() ?: 0,
-                    currentProcess = 0,
+                        ?.toFloatOrNull() ?: 0F,
+                    currentProcess = 0F,
                 )
             }
 
