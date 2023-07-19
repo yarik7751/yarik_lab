@@ -13,4 +13,10 @@ sealed interface PlayerState {
         val value: Float,
         val song: MusicSongUi,
     ) : PlayerState
+
+    /**
+     * This status is needed for pause in progress change on UI.
+     * Without it UI is glitching.
+     */
+    object ProgressPause : PlayerState
 }

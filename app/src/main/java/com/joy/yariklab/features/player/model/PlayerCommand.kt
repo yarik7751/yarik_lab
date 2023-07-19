@@ -9,9 +9,6 @@ sealed interface PlayerCommand : Parcelable {
     data class Play(val song: MusicSongUi) : PlayerCommand
 
     @Parcelize
-    object PlayAgain : PlayerCommand
-
-    @Parcelize
     object Pause : PlayerCommand
 
     @Parcelize

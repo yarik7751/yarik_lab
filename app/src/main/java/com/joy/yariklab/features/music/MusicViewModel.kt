@@ -90,6 +90,8 @@ class MusicViewModel(
                                 }
                             }
                         }
+
+                        PlayerState.ProgressPause -> {}
                     }
                 }
                 .launchIn(this)
@@ -181,6 +183,18 @@ class MusicViewModel(
 
     fun onPositionChanged(newPosition: Float) {
         viewModelScope.launch {
+            val newSongs = stateValue.songs.map { song ->
+                when (song.status) {
+                    SongStatus.PLAY -> {
+                        song.copy(currentProcess = newPosition)
+                    }
+                    else -> song
+                }
+            }
+
+            this@MusicViewModel.reduce {
+                it.copy(songs = newSongs)
+            }
             sendEvent(Event.SendCommandToPlayer(PlayerCommand.ToPosition(newPosition)))
         }
     }

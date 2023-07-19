@@ -62,6 +62,8 @@ class PlayerService : Service(), Player.Listener {
         isClosed = false,
     )
 
+    private var isProgressBlocked = false
+
     override fun onCreate() {
         super.onCreate()
         _exoPlayer = ExoPlayer.Builder(this).build()
@@ -72,13 +74,21 @@ class PlayerService : Service(), Player.Listener {
                 _exoPlayer?.let { exoPlayer ->
                     val song = _song
                     if (exoPlayer.isPlaying && song != null) {
-                        val percent = (exoPlayer.currentPosition.toFloat() / exoPlayer.duration.toFloat()) * 100F
-                        playerEmitter.send(
-                            PlayerState.Progress(
-                                value = percent,
-                                song = song,
-                            )
-                        )
+                        when {
+                            isProgressBlocked -> {
+                                playerEmitter.send(PlayerState.ProgressPause)
+                                isProgressBlocked = false
+                            }
+                            else -> {
+                                val percent = (exoPlayer.currentPosition.toFloat() / exoPlayer.duration.toFloat()) * 100F
+                                playerEmitter.send(
+                                    PlayerState.Progress(
+                                        value = percent,
+                                        song = song,
+                                    )
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -108,15 +118,12 @@ class PlayerService : Service(), Player.Listener {
                 }
             }
 
-            PlayerCommand.PlayAgain -> {
-                playSong()
-            }
-
             PlayerCommand.Stop -> {
                 exoPlayer.stop()
             }
 
             is PlayerCommand.ToPosition -> {
+                isProgressBlocked = true
                 val positionInMills = (exoPlayer.duration * (command.position / 100F)).toLong()
                 exoPlayer.seekTo(positionInMills)
             }
