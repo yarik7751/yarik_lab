@@ -206,7 +206,7 @@ class MusicViewModel(
         viewModelScope.launch {
             val newSongs = stateValue.songs.map { song ->
                 when (song.status) {
-                    SongStatus.PLAY -> {
+                    SongStatus.PLAY, SongStatus.PAUSE -> {
                         song.copy(currentProcess = newPosition)
                     }
                     else -> song

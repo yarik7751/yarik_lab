@@ -124,8 +124,7 @@ class PlayerService : Service(), Player.Listener {
 
             is PlayerCommand.ToPosition -> {
                 isProgressBlocked = true
-                val positionInMills = (exoPlayer.duration * (command.position / 100F)).toLong()
-                exoPlayer.seekTo(positionInMills)
+                seekTo(command.position)
             }
 
             PlayerCommand.Nothing -> {}
@@ -151,9 +150,18 @@ class PlayerService : Service(), Player.Listener {
         return START_NOT_STICKY
     }
 
+    private fun seekTo(percent: Float) {
+        val positionInMills = (exoPlayer.duration * (percent / 100F)).toLong()
+        exoPlayer.seekTo(positionInMills)
+    }
+
     private fun playSong() {
         if (exoPlayer.isPlaying) {
             exoPlayer.stop()
+        }
+        val currentPosition = song.currentProcess
+        if (currentPosition > 0F) {
+            seekTo(currentPosition)
         }
         val mediaItem = MediaItem.fromUri(song.url)
         exoPlayer.apply {
