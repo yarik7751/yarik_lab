@@ -9,11 +9,11 @@ class MusicProviderImpl : MusicProvider {
 
     override suspend fun getSongs(): List<String> {
         return listOf(
-            "https://console.firebase.google.com/project/meetmesimply/storage/meetmesimply.appspot.com/files/~2Fmusic#:~:text=Name-,A_Moment_in_Time_%2D_Graham_Coe.mp3,-Size",
-            "https://console.firebase.google.com/project/meetmesimply/storage/meetmesimply.appspot.com/files/~2Fmusic#:~:text=Name-,Lover_%2D_Square_a_Saw.mp3,-Size",
-            "https://console.firebase.google.com/project/meetmesimply/storage/meetmesimply.appspot.com/files/~2Fmusic#:~:text=Name-,Monday_8am_%2D_Kinematic.mp3,-Size",
-            "https://console.firebase.google.com/project/meetmesimply/storage/meetmesimply.appspot.com/files/~2Fmusic#:~:text=Name-,Tantalizing_Youth_%2D_Social_Square.mp3,-Size",
-            "https://console.firebase.google.com/project/meetmesimply/storage/meetmesimply.appspot.com/files/~2Fmusic#:~:text=Name-,Work_N%27_Play_%2D_samiebower_(2).mp3,-Size",
+            "https://firebasestorage.googleapis.com/v0/b/meetmesimply.appspot.com/o/music%2FA_Moment_in_Time_-_Graham_Coe.mp3?alt=media&token=f950683c-63d4-4ffa-97c7-164cee88c0d2",
+            "https://firebasestorage.googleapis.com/v0/b/meetmesimply.appspot.com/o/music%2FLover_-_Square_a_Saw.mp3?alt=media&token=cdceea31-afc1-4654-b25d-fe56c1a0d7d9",
+            "https://firebasestorage.googleapis.com/v0/b/meetmesimply.appspot.com/o/music%2FMonday_8am_-_Kinematic.mp3?alt=media&token=9e055ae1-d282-4864-a765-0bd02883ff7e",
+            "https://firebasestorage.googleapis.com/v0/b/meetmesimply.appspot.com/o/music%2FTantalizing_Youth_-_Social_Square.mp3?alt=media&token=544eaa13-f73b-44f4-bbbe-c5589917935f",
+            "https://firebasestorage.googleapis.com/v0/b/meetmesimply.appspot.com/o/music%2FWork_N'_Play_-_samiebower_(2).mp3?alt=media&token=688a3128-37c9-4963-a3bd-e4992fa309c6",
         )
     }
 }

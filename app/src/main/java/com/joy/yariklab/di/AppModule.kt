@@ -2,7 +2,6 @@ package com.joy.yariklab.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.media3.exoplayer.ExoPlayer
 import com.joy.yariklab.archkit.DispatchersProvider
 import com.joy.yariklab.archkit.DispatchersProviderImpl
 import com.joy.yariklab.core.api.getOkHttpClient
@@ -27,6 +26,9 @@ import com.joy.yariklab.features.common.ErrorObserverImpl
 import com.joy.yariklab.features.curencydetails.CurrencyDetailsViewModel
 import com.joy.yariklab.features.currencieslist.CurrenciesListViewModel
 import com.joy.yariklab.features.music.MusicViewModel
+import com.joy.yariklab.features.player.observer.PlayerEmitter
+import com.joy.yariklab.features.player.observer.PlayerObserver
+import com.joy.yariklab.features.player.observer.PlayerObserverImpl
 import com.joy.yariklab.features.weather.WeatherViewModel
 import com.joy.yariklab.main.MainViewModel
 import com.joy.yariklab.workmanager.CheckCurrencyDataWorker
@@ -61,6 +63,7 @@ val appModule = module {
         MusicViewModel(
             musicInteractor = get(),
             errorEmitter = get(),
+            playerObserver = get(),
         )
     }
     viewModel {
@@ -70,10 +73,6 @@ val appModule = module {
         MainViewModel(
             errorObserver = get(),
         )
-    }
-
-    single {
-        ExoPlayer.Builder(get()).build()
     }
 
     single {
@@ -149,8 +148,12 @@ val appModule = module {
     single {
         ErrorObserverImpl()
     }.binds(
-        arrayOf(
-            ErrorObserver::class, ErrorEmitter::class
-        )
+        arrayOf(ErrorObserver::class, ErrorEmitter::class)
+    )
+
+    single {
+        PlayerObserverImpl()
+    }.binds(
+        arrayOf(PlayerObserver::class, PlayerEmitter::class)
     )
 }
