@@ -101,6 +101,13 @@ class MusicViewModel(
                                     }
                                     else -> song
                                 }
+                            }.toMutableList()
+
+                            if (selectedSong == null) {
+                                val firstItem = newSongs[0].copy(status = changeSongStatus(newSongs[0].status)).apply {
+                                    selectedSong = this
+                                }
+                                newSongs[0] = firstItem
                             }
 
                             this@MusicViewModel.reduce {
