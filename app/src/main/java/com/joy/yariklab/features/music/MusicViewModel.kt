@@ -17,6 +17,7 @@ import com.joy.yariklab.features.player.model.PlayerState
 import com.joy.yariklab.features.player.observer.PlayerObserver
 import com.joy.yariklab.toolskit.EMPTY_STRING
 import com.joy.yariklab.toolskit.parallelMap
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -95,7 +96,7 @@ class MusicViewModel(
                                         song.copy(status = SongStatus.UNSELECT)
                                     }
                                     index == nextIndex -> {
-                                        song.copy(status = changeSongStatus(song.status)).apply {
+                                        song.changeSongStatus().apply {
                                             selectedSong = this
                                         }
                                     }
@@ -104,7 +105,7 @@ class MusicViewModel(
                             }.toMutableList()
 
                             if (selectedSong == null) {
-                                val firstItem = newSongs[0].copy(status = changeSongStatus(newSongs[0].status)).apply {
+                                val firstItem = newSongs[0].changeSongStatus().apply {
                                     selectedSong = this
                                 }
                                 newSongs[0] = firstItem
@@ -114,15 +115,7 @@ class MusicViewModel(
                                 it.copy(songs = newSongs)
                             }
 
-                            selectedSong?.let {
-                                val command = when (it.status) {
-                                    SongStatus.PLAY-> PlayerCommand.Play(it)
-                                    SongStatus.PAUSE -> PlayerCommand.Pause
-                                    SongStatus.UNSELECT -> PlayerCommand.Nothing
-                                }
-
-                                sendEvent(Event.SendCommandToPlayer(command))
-                            }
+                            sendCommandToPlayer(selectedSong)
                         }
                         is PlayerState.Other -> {}
                         is PlayerState.Pause -> {}
@@ -170,7 +163,7 @@ class MusicViewModel(
             val newSongs = viewState.value.songs.map { song ->
                 when (song.url) {
                     viewState.value.selectedUrl -> {
-                        song.copy(status = changeSongStatus(song.status)).apply {
+                        song.changeSongStatus().apply {
                             selectedSong = this
                         }
                     }
@@ -182,24 +175,29 @@ class MusicViewModel(
                 it.copy(songs = newSongs)
             }
 
-            selectedSong?.let {
-                val command = when (it.status) {
-                    SongStatus.PLAY-> PlayerCommand.Play(it)
-                    SongStatus.PAUSE -> PlayerCommand.Pause
-                    SongStatus.UNSELECT -> PlayerCommand.Nothing
-                }
-
-                sendEvent(Event.SendCommandToPlayer(command))
-            }
+            sendCommandToPlayer(selectedSong)
         }
     }
 
-    private fun changeSongStatus(currentStatus: SongStatus): SongStatus {
-        return when (currentStatus) {
+    private fun CoroutineScope.sendCommandToPlayer(selectedSong: MusicSongUi?) {
+        selectedSong?.let {
+            val command = when (it.status) {
+                SongStatus.PLAY-> PlayerCommand.Play(it)
+                SongStatus.PAUSE -> PlayerCommand.Pause
+                SongStatus.UNSELECT -> PlayerCommand.Nothing
+            }
+
+            sendEvent(Event.SendCommandToPlayer(command))
+        }
+    }
+
+    private fun MusicSongUi.changeSongStatus(): MusicSongUi {
+        val newStatus = when (this.status) {
             SongStatus.PLAY -> SongStatus.PAUSE
             SongStatus.PAUSE,
             SongStatus.UNSELECT-> SongStatus.PLAY
         }
+        return this.copy(status = newStatus)
     }
 
     fun onPositionChanged(newPosition: Float) {
