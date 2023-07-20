@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalPermissionsApi::class)
+
 package com.joy.yariklab.features.music
 
+import android.Manifest
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -20,13 +23,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.joy.yariklab.R
+import com.joy.yariklab.features.music.MusicViewModel.Event
 import com.joy.yariklab.features.music.model.MusicSongUi
 import com.joy.yariklab.features.music.model.SongStatus
+import com.joy.yariklab.features.player.PlayerService
 import com.joy.yariklab.navigation.FlowCoordinator
 import com.joy.yariklab.ui.theme.Purple80
 import com.joy.yariklab.uikit.LabProgressBar
@@ -40,6 +49,7 @@ fun MusicScreen(
     flowCoordinator: FlowCoordinator,
 ) {
     val state = viewModel.viewState.collectAsState()
+    val context = LocalContext.current
 
     if (state.value.isLoading) {
         LabProgressBar()
@@ -53,7 +63,13 @@ fun MusicScreen(
     LaunchedEffect(key1 = Unit) {
         viewModel.singleEvents.collectLatest { event ->
             when (event) {
-                else -> {}
+                is Event.SendCommandToPlayer -> {
+                    val intent = PlayerService.newIntent(
+                        context = context,
+                        command = event.command,
+                    )
+                    context.startForegroundService(intent)
+                }
             }
         }
     }
@@ -67,11 +83,9 @@ fun MusicScreenPreview() {
             status = SongStatus.PAUSE,
             title = "Music title",
             subtitle = "Subtitle",
-            icon = null,
-            minProcess = 0,
-            maxProcess = 10000,
-            currentProcess = 0,
-            isProgressVisible = false,
+            minProcess = 0F,
+            maxProcess = 100F,
+            currentProcess = 0F,
             url = "https://console.firebase.google.com/",
         ).itemCountPreview(4),
     )
@@ -114,6 +128,13 @@ fun MusicItem(
     song: MusicSongUi,
     viewModel: MusicViewModel,
 ) {
+    val notificationPermissionState =
+        rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS) { check ->
+            if (check) {
+                viewModel.onCheckNotificationPermission()
+            }
+        }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -134,6 +155,11 @@ fun MusicItem(
                         vertical = 8.dp,
                     ),
             ) {
+                val imageRes = when (song.status) {
+                    SongStatus.PLAY -> R.drawable.ic_pause_white
+                    SongStatus.PAUSE,
+                    SongStatus.UNSELECT -> R.drawable.ic_play_white
+                }
                 Image(
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -141,9 +167,16 @@ fun MusicItem(
                             start = 8.dp,
                         )
                         .clickable {
-                            viewModel.onSongStatusClick(song.url)
+                            val isPermissionGranted = notificationPermissionState.status.isGranted
+                            viewModel.onSongStatusClick(
+                                url = song.url,
+                                isPermissionGranted = isPermissionGranted
+                            )
+                            if (isPermissionGranted.not()) {
+                                notificationPermissionState.launchPermissionRequest()
+                            }
                         },
-                    painter = painterResource(id = R.drawable.ic_play_white),
+                    painter = painterResource(id = imageRes),
                     contentDescription = null,
                 )
 
@@ -178,7 +211,7 @@ fun MusicItem(
                 }
             }
 
-            if (song.isProgressVisible.not()) return@Column
+            if (song.status == SongStatus.UNSELECT) return@Column
 
             Row(
                 modifier = Modifier
@@ -190,8 +223,11 @@ fun MusicItem(
                 Slider(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    value = 100F,
-                    onValueChange = {},
+                    value = song.currentProcess,
+                    onValueChange = {
+                        viewModel.onPositionChanged(it)
+                    },
+                    valueRange = 0F..100F,
                 )
             }
         }
