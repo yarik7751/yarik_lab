@@ -17,9 +17,11 @@ import com.joy.yariklab.features.player.model.PlayerState
 import com.joy.yariklab.features.player.observer.PlayerObserver
 import com.joy.yariklab.toolskit.EMPTY_STRING
 import com.joy.yariklab.toolskit.parallelMap
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MusicViewModel(
     private val musicInteractor: MusicInteractor,
@@ -38,6 +40,47 @@ class MusicViewModel(
     }
 
     init {
+        subscribeOnPlayerState()
+        initData()
+    }
+
+    private fun initData() {
+        viewModelScope.safeLaunch(errorEmitter::emit) {
+            reduce { it.copy(isLoading = true) }
+            val songs = withContext(Dispatchers.IO) {
+                musicInteractor.getSongs().parallelMap {
+                    val mmr = MediaMetadataRetriever()
+                    mmr.setDataSource(it)
+
+                    /*val bitmap = mmr.embeddedPicture?.let { pictureArray ->
+                        BitmapFactory.decodeByteArray(pictureArray, 0, pictureArray.size)
+                    }*/
+                    MusicSongUi(
+                        status = SongStatus.UNSELECT,
+                        title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
+                            .orEmpty(),
+                        subtitle = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
+                            .orEmpty(),
+                        url = it,
+                        minProcess = 0F,
+                        maxProcess = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                            ?.toFloatOrNull() ?: 0F,
+                        currentProcess = 0F,
+                    )
+                }
+            }
+
+            reduce {
+                it.copy(
+                    songs = songs,
+                )
+            }
+        }.invokeOnCompletion {
+            viewModelScope.reduce { it.copy(isLoading = false) }
+        }
+    }
+
+    private fun subscribeOnPlayerState() {
         viewModelScope.launch {
             playerObserver.subscribeOnPlayerState()
                 .onEach { state ->
@@ -95,35 +138,6 @@ class MusicViewModel(
                     }
                 }
                 .launchIn(this)
-        }
-
-        viewModelScope.safeLaunch(errorEmitter::emit) {
-            val songs = musicInteractor.getSongs().parallelMap {
-                val mmr = MediaMetadataRetriever()
-                mmr.setDataSource(it)
-
-                /*val bitmap = mmr.embeddedPicture?.let { pictureArray ->
-                    BitmapFactory.decodeByteArray(pictureArray, 0, pictureArray.size)
-                }*/
-                MusicSongUi(
-                    status = SongStatus.UNSELECT,
-                    title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
-                        .orEmpty(),
-                    subtitle = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
-                        .orEmpty(),
-                    url = it,
-                    minProcess = 0F,
-                    maxProcess = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                        ?.toFloatOrNull() ?: 0F,
-                    currentProcess = 0F,
-                )
-            }
-
-            reduce {
-                it.copy(
-                    songs = songs,
-                )
-            }
         }
     }
 
