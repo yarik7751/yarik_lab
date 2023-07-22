@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,7 +24,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,7 +40,6 @@ import com.joy.yariklab.features.music.model.MusicSongUi
 import com.joy.yariklab.features.music.model.SongStatus
 import com.joy.yariklab.features.player.PlayerService
 import com.joy.yariklab.navigation.FlowCoordinator
-import com.joy.yariklab.ui.theme.Purple80
 import com.joy.yariklab.uikit.LabProgressBar
 import com.joy.yariklab.uikit.itemCountPreview
 import com.joy.yariklab.uikit.simplePadding
@@ -147,7 +149,7 @@ fun MusicItem(
             modifier = Modifier
                 .fillMaxSize()
                 .clip(RoundedCornerShape(8.dp))
-                .background(color = Purple80),
+                .background(color = colorResource(id = R.color.teal_200)),
         ) {
             Row(
                 modifier = Modifier
@@ -228,6 +230,11 @@ fun MusicItem(
                         viewModel.onPositionChanged(it)
                     },
                     valueRange = 0F..100F,
+                    colors = SliderDefaults.colors(
+                        thumbColor = Color.Black,
+                        activeTrackColor = Color.Black,
+                        inactiveTrackColor = Color.Gray,
+                    ),
                 )
             }
         }
