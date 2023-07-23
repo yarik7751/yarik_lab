@@ -6,9 +6,10 @@ fun Long.nullIfZero(): Long? {
 }
 
 fun Long?.ifNullOrZero(action: () -> Long): Long {
-    if (this == null) return action()
-    if (this == 0L) return action()
-    return this
+    return when {
+        this != null && this != 0L -> this
+        else -> action()
+    }
 }
 
 fun Long?.orZero() = this ?: 0L

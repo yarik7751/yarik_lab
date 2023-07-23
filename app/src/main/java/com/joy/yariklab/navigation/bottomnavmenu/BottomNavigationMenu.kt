@@ -15,6 +15,8 @@ import com.joy.yariklab.R
 import com.joy.yariklab.navigation.FlowCoordinator
 import com.joy.yariklab.navigation.FlowCoordinatorImpl
 
+private const val BLACK_ALPHA = 0.4F
+
 @Composable
 fun BottomNavigationMenu(navController: NavController) {
     val items = listOf(
@@ -42,7 +44,7 @@ fun BottomNavigationMenu(navController: NavController) {
                     )
                 },
                 selectedContentColor = Color.Black,
-                unselectedContentColor = Color.Black.copy(0.4f),
+                unselectedContentColor = Color.Black.copy(BLACK_ALPHA),
                 alwaysShowLabel = true,
                 onClick = {
                     when (item) {

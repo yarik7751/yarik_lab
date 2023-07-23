@@ -7,6 +7,8 @@ interface MusicProvider {
 
 class MusicProviderImpl : MusicProvider {
 
+    // TODO test data
+    @Suppress("MaxLineLength")
     override suspend fun getSongs(): List<String> {
         return listOf(
             "https://firebasestorage.googleapis.com/v0/b/meetmesimply.appspot.com/o/music%2FA_Moment_in_Time_-_Graham_Coe.mp3?alt=media&token=f950683c-63d4-4ffa-97c7-164cee88c0d2",

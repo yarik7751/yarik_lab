@@ -1,6 +1,6 @@
 package com.joy.yariklab.toolskit
 
-val EMPTY_STRING = ""
+const val EMPTY_STRING = ""
 
 fun String?.ifNull(action: () -> String): String {
     if (this != null) return this
@@ -8,7 +8,8 @@ fun String?.ifNull(action: () -> String): String {
 }
 
 fun String?.ifNullOrEmpty(action: () -> String): String {
-    if (this == null) return action()
-    if (this.isEmpty()) return action()
-    return this
+    return when {
+        !this.isNullOrBlank() -> this
+        else -> action()
+    }
 }

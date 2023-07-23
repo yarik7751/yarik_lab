@@ -74,25 +74,34 @@ class PlayerService : Service(), Player.Listener {
                 _exoPlayer?.let { exoPlayer ->
                     val song = _song
                     if (exoPlayer.isPlaying && song != null) {
-                        when {
-                            isProgressBlocked -> {
-                                playerEmitter.send(PlayerState.ProgressPause)
-                                isProgressBlocked = false
-                            }
-                            else -> {
-                                val percent = (exoPlayer.currentPosition.toFloat() / exoPlayer.duration.toFloat()) * 100F
-                                playerEmitter.send(
-                                    PlayerState.Progress(
-                                        value = percent,
-                                        song = song,
-                                    )
-                                )
-                            }
-                        }
+                        sendPlayerEvent()
                     }
                 }
             }
         }
+    }
+
+    private fun sendPlayerEvent() {
+        when {
+            isProgressBlocked -> {
+                playerEmitter.send(PlayerState.ProgressPause)
+                isProgressBlocked = false
+            }
+            else -> {
+                val percent = exoPlayer.getProgressPercent()
+                playerEmitter.send(
+                    PlayerState.Progress(
+                        value = percent,
+                        song = song,
+                    )
+                )
+            }
+        }
+    }
+
+    @Suppress("MagicNumber")
+    private fun ExoPlayer.getProgressPercent(): Float {
+        return (this.currentPosition.toFloat() / this.duration.toFloat()) * 100F
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -150,6 +159,7 @@ class PlayerService : Service(), Player.Listener {
         return START_NOT_STICKY
     }
 
+    @Suppress("MagicNumber")
     private fun seekTo(percent: Float) {
         val positionInMills = (exoPlayer.duration * (percent / 100F)).toLong()
         exoPlayer.seekTo(positionInMills)

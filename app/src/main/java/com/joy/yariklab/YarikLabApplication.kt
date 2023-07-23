@@ -11,6 +11,8 @@ import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
 import java.util.concurrent.TimeUnit
 
+private const val PERIOD_INTERVAL = 16L
+
 class YarikLabApplication : Application() {
 
     override fun onCreate() {
@@ -23,7 +25,7 @@ class YarikLabApplication : Application() {
         }
 
         val workRequest: WorkRequest =
-            PeriodicWorkRequestBuilder<CheckCurrencyDataWorker>(16, TimeUnit.MINUTES)
+            PeriodicWorkRequestBuilder<CheckCurrencyDataWorker>(PERIOD_INTERVAL, TimeUnit.MINUTES)
                 .build()
 
         WorkManager

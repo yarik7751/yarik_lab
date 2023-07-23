@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -182,61 +183,83 @@ fun MusicItem(
                     contentDescription = null,
                 )
 
-                Column(
-                    modifier = Modifier
-                        .simplePadding(
-                            start = 8.dp,
-                        )
-                ) {
-                    Text(
-                        fontWeight = FontWeight.Bold,
-                        text = song.title,
-                    )
-                    Text(song.subtitle)
-                }
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.CenterVertically)
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .align(Alignment.End)
-                            .simplePadding(
-                                end = 8.dp,
-                            ),
-                        painter = painterResource(id = R.drawable.ic_toc_white),
-                        contentDescription = null,
-                        alignment = Alignment.Center,
-                    )
-                }
+                MusicItemText(
+                    song = song,
+                    viewModel = viewModel,
+                )
             }
 
             if (song.status == SongStatus.UNSELECT) return@Column
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .simplePadding(
-                        horizontal = 8.dp,
-                    ),
-            ) {
-                Slider(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    value = song.currentProcess,
-                    onValueChange = {
-                        viewModel.onPositionChanged(it)
-                    },
-                    valueRange = 0F..100F,
-                    colors = SliderDefaults.colors(
-                        thumbColor = Color.Black,
-                        activeTrackColor = Color.Black,
-                        inactiveTrackColor = Color.Gray,
-                    ),
-                )
-            }
+            MusicItemSlider(
+                song = song,
+                viewModel = viewModel,
+            )
         }
+    }
+}
+
+@Composable
+fun RowScope.MusicItemText(
+    song: MusicSongUi,
+    viewModel: MusicViewModel,
+) {
+    Column(
+        modifier = Modifier
+            .simplePadding(
+                start = 8.dp,
+            )
+    ) {
+        Text(
+            fontWeight = FontWeight.Bold,
+            text = song.title,
+        )
+        Text(song.subtitle)
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .align(Alignment.CenterVertically)
+    ) {
+        Image(
+            modifier = Modifier
+                .align(Alignment.End)
+                .simplePadding(
+                    end = 8.dp,
+                ),
+            painter = painterResource(id = R.drawable.ic_toc_white),
+            contentDescription = null,
+            alignment = Alignment.Center,
+        )
+    }
+}
+
+@Composable
+fun MusicItemSlider(
+    song: MusicSongUi,
+    viewModel: MusicViewModel,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .simplePadding(
+                horizontal = 8.dp,
+            ),
+    ) {
+        Slider(
+            modifier = Modifier
+                .fillMaxWidth(),
+            value = song.currentProcess,
+            onValueChange = {
+                viewModel.onPositionChanged(it)
+            },
+            valueRange = 0F..100F,
+            colors = SliderDefaults.colors(
+                thumbColor = Color.Black,
+                activeTrackColor = Color.Black,
+                inactiveTrackColor = Color.Gray,
+            ),
+        )
     }
 }

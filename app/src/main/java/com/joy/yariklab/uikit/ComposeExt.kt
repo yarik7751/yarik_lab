@@ -15,12 +15,12 @@ fun Modifier.simplePadding(
     vertical: Dp = 0.dp,
     horizontal: Dp = 0.dp,
 ): Modifier {
-    if ((start != 0.dp || end != 0.dp) && horizontal != 0.dp) {
-        throw IllegalArgumentException("Start and End OR Horizontal!")
+    require(((start != 0.dp || end != 0.dp) && horizontal != 0.dp).not()) {
+        "Start and End OR Horizontal!"
     }
 
-    if ((top != 0.dp || bottom != 0.dp) && vertical != 0.dp) {
-        throw IllegalArgumentException("Top and Bottom OR Vertical!")
+    require(((top != 0.dp || bottom != 0.dp) && vertical != 0.dp).not()) {
+        "Top and Bottom OR Vertical!"
     }
 
     var startValue = start
@@ -50,7 +50,7 @@ fun Modifier.simplePadding(
 
 fun <T> List<T>.repeatForPreview(count: Int): List<T> {
     val mutableList = this.toMutableList()
-    (0..count).forEach {
+    repeat((0..count).count()) {
         mutableList.addAll(mutableList)
     }
 

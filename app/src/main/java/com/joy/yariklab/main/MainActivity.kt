@@ -9,7 +9,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
@@ -57,24 +59,7 @@ class MainActivity : ComponentActivity() {
             }
 
             if (openDialog.value.isVisible) {
-                AlertDialog(
-                    onDismissRequest = {},
-                    title = {
-                        Text(text = openDialog.value.title)
-                    },
-                    text = {
-                        Text(openDialog.value.message)
-                    },
-                    confirmButton = {},
-                    dismissButton = {
-                        Button(
-                            onClick = {
-                                openDialog.value = openDialog.value.copy(isVisible = false)
-                            }) {
-                            Text("Cancel")
-                        }
-                    }
-                )
+                ShowAlertDialog(openDialog)
             }
 
             LaunchedEffect(key1 = Unit) {
@@ -90,5 +75,27 @@ class MainActivity : ComponentActivity() {
                     }}
                 }
             }
+    }
+
+    @Composable
+    private fun ShowAlertDialog(openDialog: MutableState<DialogInfo>) {
+        AlertDialog(
+            onDismissRequest = {},
+            title = {
+                Text(text = openDialog.value.title)
+            },
+            text = {
+                Text(openDialog.value.message)
+            },
+            confirmButton = {},
+            dismissButton = {
+                Button(
+                    onClick = {
+                        openDialog.value = openDialog.value.copy(isVisible = false)
+                    }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }
