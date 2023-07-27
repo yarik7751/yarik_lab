@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "joylab-37e12",
+  "private_key_id": "ad0eb6011f546dd104cb1441722a514ca871ab3e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCaMg3lBYN+H5PX\nwOvLJGw0zC+YqCUtGMX9neqVZPns3YOZmx1hU9im68GaXYKpkv/j4e790TwDffva\nFUawixGGScgfco8R0hUkfnuilKzLBHG1bTV387N/EnWzQoUXkRd/6CgNufWtkkmm\nqKP96Ef4JQ0a7DAO2rCQOOQQ2LKv9b9kSxZWuFmr4JHlf9biG+VUb1gQWVSGF4+/\n69Op4gjRqXs7Cr9/e+L8Kcw05wfkMdn08txeTU4JV6oBGVhkmzisuRKkepwRWWsR\nIXlewxXrhCt4NGD+xD5iwn4NXTE7MXHrVpBEqhVTD2sPtaSrDMW2nU0FZcO4ApXI\nLWZuEZt5AgMBAAECggEAHDGQxtJmQ5ZkguuccY1cV58KCOCdw4wnD4NjVCOdawjp\nuhlZmuUo1QSAZsg4Tuc48KLr/u7WCVFszmhbf4Y+Ew7Ej7Nzo2+FPCIAWy7SFWDf\npautPhyKMm7epINCMJfv8www3qmk2TLJUra9HXzuQ9oKdmS/OMgVxpkQYmAs8+0z\ng/BzUa/1KVArVtQNeHNy2RMxLwDcqSGuVmL0g95xyudUc2QfjfC7zLaq1BTahBrY\nvZUGNFITfG4Gf9AjLVvdmxZlfq1P9hx9Zf3jLxserCClBaqarcH/eTL9uCYVBndZ\nuIYwXnxG36RPeiNAFTLCG+1ZAjbvl3MrZvbB3x5VzQKBgQDIamDMccUcwIQtdgvd\n0iSp9VHLOivDuy++8hWm6LcXIZhxONRYtbeffBHipKCH7VheiDXHOGFb/ZvFFOAV\nbUYuUngAigxVFW4UwXS5hKzvY/ahaa0ojQQkBnI3xIqBbLnonsvS/mN3Gb333Kw0\n4prPP5UsMyDOHuMvuP5wlbBOFwKBgQDE9gcaRZ1RGilXO5LmqFUpSWi+lplUrPJL\njs7I/YVRwJ7oPR78+Q877ZfeZVHqp6sVbP//emMok4gL2cX2Y25baDReSMXE2W3F\nu8S8qzrLN1jf9ACqSIETTnBM4gEVsvw+NWg30rTTQAW8IAdx89aJN98GqQnvljNw\n3c8KkhFs7wKBgCRGTNr0RK8dkU8BLMirfoNcqb9U+hLlUJEJFC4vtOP06rijhpu/\n2Ep/lGUnUv8HUJVbphA2/jg+QPF9A8odCzTbLGk8k1rbFB+hnFTv1LVHrJ4umG7c\nh0FWAVpisocWfNfD1jSMYsht2lqAkJLJ6SdV5NQpNOjZ4lkC7NrH3S9lAoGAXtMU\nGFHrq2AtBxJnZyUj2vy8sQVQTLP28umOJLXpubJCzwyeHqzJ6NA6jZe6GH8gnvAb\nT6RcmOxuU0ZFSJoWR2ujysC+dkc30jrUPQEzDSNYZnnS2CiP+/uHlXw5iXjieBC+\nXCHVbN8l46yH6RS79NQxS8OWRQLLQUuIok4wlYECgYEAiLt8+Iq5YvNOI4OWCRbO\ntcyxg07SjTWOT3Tdd+eboeI73acSdABUexvebQKrqP4Da9/jei9gkP+jdca0y+K/\nxZRXSzafhSfk+X+KVDypnrA7lojCNKHG2o4SqHHQ2j+Hgkye3PW0Jgv8m7P37e2F\nukk498rJbapxTL+rhOFy4/0=\n-----END PRIVATE KEY-----\n",
+  "client_email": "app-distribution@joylab-37e12.iam.gserviceaccount.com",
+  "client_id": "116561481587856911894",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/app-distribution%40joylab-37e12.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
