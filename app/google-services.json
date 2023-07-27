@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "776802115943",
+    "project_id": "joylab-37e12",
+    "storage_bucket": "joylab-37e12.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:776802115943:android:51d438824d9d7f02538fc2",
+        "android_client_info": {
+          "package_name": "com.joy.yariklab"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "776802115943-6312tatgr4d5hmtdhtacrc6ao87bq0ib.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJSE4cHLmDZTFpV-sMOSNvYOqyBAVa8Oc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "776802115943-6312tatgr4d5hmtdhtacrc6ao87bq0ib.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
