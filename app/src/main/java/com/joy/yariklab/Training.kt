@@ -1,35 +1,6 @@
 package com.joy.yariklab
 
-data class User(
-    val name: String,
-    val age: Int,
-) {
-
-    override fun hashCode(): Int {
-        return 1
-    }
-}
-
 fun main() {
-    val map = hashMapOf(
-         User(
-            name = "Yarik",
-            age = 28,
-        ) to 1,
-         User(
-            name = "Vasiya",
-            age = 45,
-        ) to 2,
-        User(
-            name = "Rzora",
-            age = 24,
-        ) to 3,
-    )
-    map.put(User(
-        name = "Yarik",
-        age = 28,
-    ), 34)
-    map.hashCode()
     //println(map.get(1))
     // TestExpl.yarikMain()
     /*val cache = InMemoryCache<Int, String>()

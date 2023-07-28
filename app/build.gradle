@@ -3,6 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
+    id "io.gitlab.arturbosch.detekt"
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -13,8 +15,8 @@ android {
         applicationId "com.joy.yariklab"
         minSdk 26
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        versionCode 11
+        versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -87,6 +89,9 @@ dependencies {
     def exo_player_version = "1.1.0"
     implementation "androidx.media3:media3-exoplayer:$exo_player_version"
     implementation "androidx.media3:media3-exoplayer-dash:$exo_player_version"
+
+    implementation platform('com.google.firebase:firebase-bom:32.2.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
 
     testImplementation 'junit:junit:4.13.2'
 

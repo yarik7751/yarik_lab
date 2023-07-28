@@ -87,57 +87,89 @@ class MusicViewModel(
                 .onEach { state ->
                     when (state) {
                         is PlayerState.End -> {
-                            var nextIndex = -1
-                            var selectedSong: MusicSongUi? = null
-                            val newSongs = stateValue.songs.mapIndexed { index, song ->
-                                when {
-                                    song.url == state.song.url -> {
-                                        nextIndex = index + 1
-                                        song.copy(status = SongStatus.UNSELECT)
-                                    }
-                                    index == nextIndex -> {
-                                        song.changeSongStatus().apply {
-                                            selectedSong = this
-                                        }
-                                    }
-                                    else -> song
-                                }
-                            }.toMutableList()
-
-                            if (selectedSong == null) {
-                                val firstItem = newSongs[0].changeSongStatus().apply {
-                                    selectedSong = this
-                                }
-                                newSongs[0] = firstItem
-                            }
-
-                            this@MusicViewModel.reduce {
-                                it.copy(songs = newSongs)
-                            }
-
-                            sendCommandToPlayer(selectedSong)
+                            switchToNextSong(state)
                         }
                         is PlayerState.Other -> {}
                         is PlayerState.Pause -> {}
                         is PlayerState.Play -> {}
                         is PlayerState.Progress -> {
-                            stateValue.songs.map { song ->
-                                if (song.url == state.song.url) {
-                                    song.copy(currentProcess = state.value)
-                                } else {
-                                    song
-                                }
-                            }.let { songs ->
-                                reduce {
-                                    it.copy(songs = songs)
-                                }
-                            }
+                            updateSongProgress(state)
                         }
-
                         PlayerState.ProgressPause -> {}
+                        PlayerState.Destroy -> {
+                            stopAllSongs()
+                        }
                     }
                 }
                 .launchIn(this)
+        }
+    }
+
+    private fun stopAllSongs() {
+        stateValue.songs.map { song ->
+            song.copy(
+                status = SongStatus.UNSELECT,
+                currentProcess = 0F,
+            )
+        }.let { songs ->
+            viewModelScope.launch {
+                reduce {
+                    it.copy(songs = songs)
+                }
+            }
+        }
+    }
+
+    private fun updateSongProgress(state: PlayerState.Progress) {
+        stateValue.songs.map { song ->
+            if (song.url == state.song.url) {
+                song.copy(currentProcess = state.value)
+            } else {
+                song
+            }
+        }.let { songs ->
+            viewModelScope.launch {
+                reduce {
+                    it.copy(songs = songs)
+                }
+            }
+        }
+    }
+
+    private suspend fun switchToNextSong(state: PlayerState.End) {
+        var nextIndex = -1
+        var selectedSong: MusicSongUi? = null
+        val newSongs = stateValue.songs.mapIndexed { index, song ->
+            when {
+                song.url == state.song.url -> {
+                    nextIndex = index + 1
+                    song.copy(
+                        status = SongStatus.UNSELECT,
+                        currentProcess = 0F,
+                    )
+                }
+                index == nextIndex -> {
+                    song.changeSongStatus().apply {
+                        selectedSong = this
+                    }
+                }
+                else -> song
+            }
+        }.toMutableList()
+
+        if (selectedSong == null) {
+            val firstItem = newSongs[0].changeSongStatus().apply {
+                selectedSong = this
+            }
+            newSongs[0] = firstItem
+        }
+
+        this@MusicViewModel.reduce {
+            it.copy(songs = newSongs)
+        }
+
+        viewModelScope.launch {
+            sendCommandToPlayer(selectedSong)
         }
     }
 
