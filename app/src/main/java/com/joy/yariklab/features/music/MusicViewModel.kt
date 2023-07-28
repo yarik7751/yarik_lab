@@ -95,11 +95,28 @@ class MusicViewModel(
                         is PlayerState.Progress -> {
                             updateSongProgress(state)
                         }
-
                         PlayerState.ProgressPause -> {}
+                        PlayerState.Destroy -> {
+                            stopAllSongs()
+                        }
                     }
                 }
                 .launchIn(this)
+        }
+    }
+
+    private fun stopAllSongs() {
+        stateValue.songs.map { song ->
+            song.copy(
+                status = SongStatus.UNSELECT,
+                currentProcess = 0F,
+            )
+        }.let { songs ->
+            viewModelScope.launch {
+                reduce {
+                    it.copy(songs = songs)
+                }
+            }
         }
     }
 
