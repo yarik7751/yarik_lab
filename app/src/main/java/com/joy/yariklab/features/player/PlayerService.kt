@@ -182,7 +182,18 @@ class PlayerService : Service(), Player.Listener {
     @Suppress("MagicNumber")
     private fun seekTo(percent: Float) {
         val positionInMills = (exoPlayer.duration * (percent / 100F)).toLong()
-        exoPlayer.seekTo(positionInMills)
+        when {
+            exoPlayer.isPlaying -> {
+                exoPlayer.seekTo(positionInMills)
+            }
+            else -> {
+                exoPlayer.apply {
+                    seekTo(positionInMills)
+                    prepare()
+                    play()
+                }
+            }
+        }
     }
 
     private fun playSong() {

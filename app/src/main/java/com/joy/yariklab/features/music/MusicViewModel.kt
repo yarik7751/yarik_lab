@@ -143,7 +143,10 @@ class MusicViewModel(
             when {
                 song.url == state.song.url -> {
                     nextIndex = index + 1
-                    song.copy(status = SongStatus.UNSELECT)
+                    song.copy(
+                        status = SongStatus.UNSELECT,
+                        currentProcess = 0F,
+                    )
                 }
                 index == nextIndex -> {
                     song.changeSongStatus().apply {
