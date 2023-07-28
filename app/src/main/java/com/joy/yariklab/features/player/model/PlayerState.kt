@@ -7,6 +7,7 @@ sealed interface PlayerState {
     data class Play(val song: MusicSongUi) : PlayerState
     data class Pause(val song: MusicSongUi) : PlayerState
     data class End(val song: MusicSongUi) : PlayerState
+    object Destroy : PlayerState
     data class Other(val song: MusicSongUi) : PlayerState
 
     data class Progress(

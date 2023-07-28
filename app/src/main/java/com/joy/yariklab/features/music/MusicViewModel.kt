@@ -95,11 +95,28 @@ class MusicViewModel(
                         is PlayerState.Progress -> {
                             updateSongProgress(state)
                         }
-
                         PlayerState.ProgressPause -> {}
+                        PlayerState.Destroy -> {
+                            stopAllSongs()
+                        }
                     }
                 }
                 .launchIn(this)
+        }
+    }
+
+    private fun stopAllSongs() {
+        stateValue.songs.map { song ->
+            song.copy(
+                status = SongStatus.UNSELECT,
+                currentProcess = 0F,
+            )
+        }.let { songs ->
+            viewModelScope.launch {
+                reduce {
+                    it.copy(songs = songs)
+                }
+            }
         }
     }
 
@@ -126,7 +143,10 @@ class MusicViewModel(
             when {
                 song.url == state.song.url -> {
                     nextIndex = index + 1
-                    song.copy(status = SongStatus.UNSELECT)
+                    song.copy(
+                        status = SongStatus.UNSELECT,
+                        currentProcess = 0F,
+                    )
                 }
                 index == nextIndex -> {
                     song.changeSongStatus().apply {
