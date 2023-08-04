@@ -29,6 +29,7 @@ import com.joy.yariklab.features.music.MusicViewModel
 import com.joy.yariklab.features.player.observer.PlayerEmitter
 import com.joy.yariklab.features.player.observer.PlayerObserver
 import com.joy.yariklab.features.player.observer.PlayerObserverImpl
+import com.joy.yariklab.features.start.StartViewModel
 import com.joy.yariklab.features.weather.WeatherViewModel
 import com.joy.yariklab.main.MainViewModel
 import com.joy.yariklab.workmanager.CheckCurrencyDataWorker
@@ -46,6 +47,11 @@ val appModule = module {
         )
     }
 
+    viewModel {
+        StartViewModel(
+            errorEmitter = get(),
+        )
+    }
     viewModel {
         CurrenciesListViewModel(
             currencyInteractor = get(),
