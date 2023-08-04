@@ -13,4 +13,6 @@ sealed class Navigation(val destination: String) {
     object Weather : Navigation("Weather")
 
     object Start : Navigation("Start")
+
+    object Login : Navigation("Login")
 }

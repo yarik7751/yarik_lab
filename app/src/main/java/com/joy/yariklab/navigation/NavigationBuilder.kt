@@ -8,6 +8,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.joy.yariklab.features.curencydetails.CurrencyDetailsScreen
 import com.joy.yariklab.features.currencieslist.CurrenciesListScreen
+import com.joy.yariklab.features.login.LoginScreen
 import com.joy.yariklab.features.music.MusicScreen
 import com.joy.yariklab.features.start.StartScreen
 import com.joy.yariklab.features.weather.WeatherScreen
@@ -38,6 +39,17 @@ fun NavGraphBuilder.buildNavigation(navController: NavController) {
                 flowCoordinator = flowCoordinator,
             )
         }
+
+        composable(
+            route = Navigation.Login.destination
+        ) {
+            LoginScreen(
+                viewModel = koinViewModel(),
+                flowCoordinator = flowCoordinator,
+            )
+        }
+
+        // ************ Test app ************
 
         composable(
             route = Navigation.CurrenciesList.destination

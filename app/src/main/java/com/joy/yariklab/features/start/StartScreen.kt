@@ -2,6 +2,7 @@ package com.joy.yariklab.features.start
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.joy.yariklab.R
+import com.joy.yariklab.features.start.StartViewModel.Event
 import com.joy.yariklab.navigation.FlowCoordinator
 import com.joy.yariklab.ui.theme.DefaultButton
 import com.joy.yariklab.ui.theme.Pink80
@@ -31,19 +33,20 @@ fun StartScreen(
     viewModel: StartViewModel,
     flowCoordinator: FlowCoordinator,
 ) {
-
     val state = viewModel.viewState.collectAsState()
 
     if (state.value.isLoading) {
         LabProgressBar()
     }
 
-    StartInfo()
+    StartInfo(viewModel)
 
     LaunchedEffect(key1 = Unit) {
         viewModel.singleEvents.collectLatest { event ->
             when (event) {
-                else -> {}
+                Event.GoToLoginScreen -> {
+                    flowCoordinator.goToLogin()
+                }
             }
         }
     }
@@ -52,58 +55,32 @@ fun StartScreen(
 @Preview
 @Composable
 fun StartScreenPreview() {
-    StartInfo()
+    StartInfo(
+        background = Color.White,
+    )
 }
 
 @Composable
 fun StartInfo(
-    background: Color = Color.Transparent
+    viewModel: StartViewModel? = null,
+    background: Color = Color.Transparent,
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(background),
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-                .align(Alignment.TopCenter),
-        ) {
-            Text(
-                modifier = Modifier
-                    .simplePadding(
-                        horizontal = 8.dp,
-                        bottom = 8.dp,
-                    )
-                    .align(Alignment.CenterHorizontally),
-                text = stringResource(id = R.string.start_title),
-                fontSize = 50.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Text(
-                modifier = Modifier
-                    .simplePadding(
-                        horizontal = 8.dp,
-                        bottom = 8.dp,
-                    )
-                    .align(Alignment.CenterHorizontally),
-                text = stringResource(id = R.string.start_title_sense),
-                fontSize = 25.sp,
-                color = Pink80
-            )
-        }
+        StartTitle()
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .simplePadding(
-                    horizontal = 4.dp,
+                    horizontal = 8.dp,
                 )
                 .align(Alignment.Center),
         ) {
-            StartActions()
+            StartActions(viewModel)
         }
 
         Text(
@@ -120,12 +97,48 @@ fun StartInfo(
 }
 
 @Composable
-fun StartActions() {
+fun BoxScope.StartTitle() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .align(Alignment.TopCenter),
+    ) {
+        Text(
+            modifier = Modifier
+                .simplePadding(
+                    horizontal = 8.dp,
+                    bottom = 8.dp,
+                )
+                .align(Alignment.CenterHorizontally),
+            text = stringResource(id = R.string.start_title),
+            fontSize = 50.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Text(
+            modifier = Modifier
+                .simplePadding(
+                    horizontal = 8.dp,
+                    bottom = 8.dp,
+                )
+                .align(Alignment.CenterHorizontally),
+            text = stringResource(id = R.string.start_title_sense),
+            fontSize = 25.sp,
+            color = Pink80
+        )
+    }
+}
+
+@Composable
+fun StartActions(
+    viewModel: StartViewModel?,
+) {
     DefaultButton(
         modifier = Modifier
             .fillMaxWidth(),
         onClick = {
-
+            viewModel?.onSignInClick()
         }
     ) {
         Text(text = stringResource(id = R.string.start_login))
@@ -135,7 +148,7 @@ fun StartActions() {
         modifier = Modifier
             .fillMaxWidth(),
         onClick = {
-
+            // TODO got to registration flow
         }
     ) {
         Text(text = stringResource(id = R.string.start_register))

@@ -13,6 +13,8 @@ interface FlowCoordinator {
     fun goToMusic()
 
     fun goToWeather()
+
+    fun goToLogin()
 }
 
 class FlowCoordinatorImpl(
@@ -44,6 +46,12 @@ class FlowCoordinatorImpl(
     override fun goToWeather() {
         navController.navigate(
             route = Navigation.Weather.destination
+        )
+    }
+
+    override fun goToLogin() {
+        navController.navigate(
+            route = Navigation.Login.destination
         )
     }
 }

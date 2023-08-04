@@ -1,14 +1,13 @@
-package com.joy.yariklab.features.start
+package com.joy.yariklab.features.login
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.joy.yariklab.archkit.ViewStateDelegate
 import com.joy.yariklab.archkit.ViewStateDelegateImpl
 import com.joy.yariklab.features.common.ErrorEmitter
-import com.joy.yariklab.features.start.StartViewModel.Event
-import com.joy.yariklab.features.start.StartViewModel.ViewState
+import com.joy.yariklab.features.login.LoginViewModel.Event
+import com.joy.yariklab.features.login.LoginViewModel.ViewState
 
-class StartViewModel(
+class LoginViewModel(
     private val errorEmitter: ErrorEmitter,
 ) : ViewModel(), ViewStateDelegate<ViewState, Event> by ViewStateDelegateImpl(ViewState()) {
 
@@ -16,11 +15,5 @@ class StartViewModel(
         val isLoading: Boolean = false,
     )
 
-    sealed interface Event {
-        object GoToLoginScreen : Event
-    }
-
-    fun onSignInClick() {
-        viewModelScope.sendEvent(Event.GoToLoginScreen)
-    }
+    sealed interface Event
 }

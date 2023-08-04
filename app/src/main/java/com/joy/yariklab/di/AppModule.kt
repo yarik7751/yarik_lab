@@ -25,6 +25,7 @@ import com.joy.yariklab.features.common.ErrorObserver
 import com.joy.yariklab.features.common.ErrorObserverImpl
 import com.joy.yariklab.features.curencydetails.CurrencyDetailsViewModel
 import com.joy.yariklab.features.currencieslist.CurrenciesListViewModel
+import com.joy.yariklab.features.login.LoginViewModel
 import com.joy.yariklab.features.music.MusicViewModel
 import com.joy.yariklab.features.player.observer.PlayerEmitter
 import com.joy.yariklab.features.player.observer.PlayerObserver
@@ -49,6 +50,11 @@ val appModule = module {
 
     viewModel {
         StartViewModel(
+            errorEmitter = get(),
+        )
+    }
+    viewModel {
+        LoginViewModel(
             errorEmitter = get(),
         )
     }
