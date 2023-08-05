@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -30,7 +28,7 @@ import com.joy.yariklab.features.start.StartTitle
 import com.joy.yariklab.navigation.FlowCoordinator
 import com.joy.yariklab.toolskit.EMPTY_STRING
 import com.joy.yariklab.ui.theme.DefaultButton
-import com.joy.yariklab.ui.theme.Pink80
+import com.joy.yariklab.ui.theme.DefaultTextField
 import com.joy.yariklab.uikit.LabProgressBar
 import com.joy.yariklab.uikit.simplePadding
 import kotlinx.coroutines.flow.collectLatest
@@ -106,7 +104,7 @@ fun LoginScreenInfo(
 @Composable
 fun LoginActions() {
     var loginValue by rememberSaveable { mutableStateOf(EMPTY_STRING) }
-    OutlinedTextField(
+    DefaultTextField(
         modifier = Modifier
             .fillMaxWidth(),
         value = loginValue,
@@ -114,21 +112,12 @@ fun LoginActions() {
             loginValue = newText
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-        label = {
-            Text(
-                text = stringResource(id = R.string.sign_in_login_label),
-                color = Pink80,
-            )
-        },
-        placeholder = { Text(text = stringResource(id = R.string.sign_in_login_hint)) },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color.Magenta,
-            unfocusedBorderColor = Pink80
-        )
+        label = stringResource(id = R.string.sign_in_login_label),
+        placeholder = stringResource(id = R.string.sign_in_login_hint),
     )
 
     var passwordValue by rememberSaveable { mutableStateOf(EMPTY_STRING) }
-    OutlinedTextField(
+    DefaultTextField(
         modifier = Modifier
             .fillMaxWidth()
             .simplePadding(
@@ -140,16 +129,7 @@ fun LoginActions() {
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         visualTransformation = PasswordVisualTransformation(),
-        label = {
-            Text(
-                text = stringResource(id = R.string.sign_in_password_label),
-                color = Pink80,
-            )
-        },
-        placeholder = { Text(text = stringResource(id = R.string.sign_in_password_hint)) },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color.Magenta,
-            unfocusedBorderColor = Pink80
-        )
+        label = stringResource(id = R.string.sign_in_password_label),
+        placeholder = stringResource(id = R.string.sign_in_password_hint),
     )
 }
