@@ -15,4 +15,6 @@ sealed class Navigation(val destination: String) {
     object Start : Navigation("Start")
 
     object Login : Navigation("Login")
+
+    object Registration : Navigation("Registration")
 }

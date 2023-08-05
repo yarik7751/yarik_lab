@@ -9,6 +9,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.VisualTransformation
+import com.joy.yariklab.toolskit.EMPTY_STRING
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,8 +24,8 @@ fun DefaultTextField(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     singleLine: Boolean = false,
     maxLines: Int = Int.MAX_VALUE,
-    label: String,
-    placeholder: String,
+    label: String = EMPTY_STRING,
+    placeholder: String = EMPTY_STRING,
 ) {
     OutlinedTextField(
         modifier = modifier,

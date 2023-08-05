@@ -24,7 +24,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.joy.yariklab.R
-import com.joy.yariklab.features.start.StartTitle
+import com.joy.yariklab.features.common.logo.StartTitle
 import com.joy.yariklab.navigation.FlowCoordinator
 import com.joy.yariklab.toolskit.EMPTY_STRING
 import com.joy.yariklab.ui.theme.DefaultButton
@@ -72,7 +72,9 @@ fun LoginScreenInfo(
             .fillMaxSize()
             .background(background),
     ) {
-        StartTitle()
+        StartTitle {
+            this.align(Alignment.TopCenter)
+        }
 
         Column(
             modifier = Modifier

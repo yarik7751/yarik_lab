@@ -18,9 +18,15 @@ class StartViewModel(
 
     sealed interface Event {
         object GoToLoginScreen : Event
+
+        object GoToRegistrationScreen : Event
     }
 
     fun onSignInClick() {
         viewModelScope.sendEvent(Event.GoToLoginScreen)
+    }
+
+    fun onSignUpClick() {
+        viewModelScope.sendEvent(Event.GoToRegistrationScreen)
     }
 }

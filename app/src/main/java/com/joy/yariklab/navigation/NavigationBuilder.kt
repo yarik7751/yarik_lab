@@ -10,6 +10,7 @@ import com.joy.yariklab.features.curencydetails.CurrencyDetailsScreen
 import com.joy.yariklab.features.currencieslist.CurrenciesListScreen
 import com.joy.yariklab.features.login.LoginScreen
 import com.joy.yariklab.features.music.MusicScreen
+import com.joy.yariklab.features.registration.RegistrationScreen
 import com.joy.yariklab.features.start.StartScreen
 import com.joy.yariklab.features.weather.WeatherScreen
 import com.joy.yariklab.main.IS_TEST_APP
@@ -44,6 +45,15 @@ fun NavGraphBuilder.buildNavigation(navController: NavController) {
             route = Navigation.Login.destination
         ) {
             LoginScreen(
+                viewModel = koinViewModel(),
+                flowCoordinator = flowCoordinator,
+            )
+        }
+
+        composable(
+            route = Navigation.Registration.destination
+        ) {
+            RegistrationScreen(
                 viewModel = koinViewModel(),
                 flowCoordinator = flowCoordinator,
             )

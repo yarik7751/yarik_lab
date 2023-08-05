@@ -30,6 +30,7 @@ import com.joy.yariklab.features.music.MusicViewModel
 import com.joy.yariklab.features.player.observer.PlayerEmitter
 import com.joy.yariklab.features.player.observer.PlayerObserver
 import com.joy.yariklab.features.player.observer.PlayerObserverImpl
+import com.joy.yariklab.features.registration.RegistrationViewModel
 import com.joy.yariklab.features.start.StartViewModel
 import com.joy.yariklab.features.weather.WeatherViewModel
 import com.joy.yariklab.main.MainViewModel
@@ -48,6 +49,11 @@ val appModule = module {
         )
     }
 
+    viewModel {
+        RegistrationViewModel(
+            errorEmitter = get(),
+        )
+    }
     viewModel {
         StartViewModel(
             errorEmitter = get(),
