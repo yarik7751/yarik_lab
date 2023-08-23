@@ -18,4 +18,15 @@ class AppSettingsImpl(
         name = "workManagerTasks",
         defaultValue = EMPTY_STRING,
     )
+    override var token: String by StringPrefDelegate(
+        preferences = preferences,
+        name = "joylovetoken",
+        defaultValue = EMPTY_STRING,
+    )
+
+    override var refreshToken: String by StringPrefDelegate(
+        preferences = preferences,
+        name = "joyloverefreshtoken",
+        defaultValue = EMPTY_STRING,
+    )
 }

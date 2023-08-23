@@ -8,8 +8,12 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.joy.yariklab.features.curencydetails.CurrencyDetailsScreen
 import com.joy.yariklab.features.currencieslist.CurrenciesListScreen
+import com.joy.yariklab.features.login.LoginScreen
 import com.joy.yariklab.features.music.MusicScreen
+import com.joy.yariklab.features.registration.RegistrationScreen
+import com.joy.yariklab.features.start.StartScreen
 import com.joy.yariklab.features.weather.WeatherScreen
+import com.joy.yariklab.main.IS_TEST_APP
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -19,10 +23,44 @@ fun NavGraphBuilder.buildNavigation(navController: NavController) {
 
     val flowCoordinator: FlowCoordinator = FlowCoordinatorImpl(navController)
 
+    val startDestination = when {
+        IS_TEST_APP -> Navigation.CurrenciesList.destination
+        else -> Navigation.Start.destination
+    }
+
     navigation(
-        startDestination = Navigation.CurrenciesList.destination,
+        startDestination = startDestination,
         route = Navigation.Root.destination
     ) {
+        composable(
+            route = Navigation.Start.destination
+        ) {
+            StartScreen(
+                viewModel = koinViewModel(),
+                flowCoordinator = flowCoordinator,
+            )
+        }
+
+        composable(
+            route = Navigation.Login.destination
+        ) {
+            LoginScreen(
+                viewModel = koinViewModel(),
+                flowCoordinator = flowCoordinator,
+            )
+        }
+
+        composable(
+            route = Navigation.Registration.destination
+        ) {
+            RegistrationScreen(
+                viewModel = koinViewModel(),
+                flowCoordinator = flowCoordinator,
+            )
+        }
+
+        // ************ Test app ************
+
         composable(
             route = Navigation.CurrenciesList.destination
         ) {

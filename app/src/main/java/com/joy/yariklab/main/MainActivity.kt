@@ -24,6 +24,8 @@ import com.joy.yariklab.ui.theme.YariklabTheme
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.android.ext.android.inject
 
+const val IS_TEST_APP = false
+
 class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by inject()
@@ -41,13 +43,26 @@ class MainActivity : ComponentActivity() {
                 )
             }
             YariklabTheme {
-                Surface(color = MaterialTheme.colors.background) {
-                    val navController = rememberNavController()
+                if (IS_TEST_APP) {
+                    Surface(color = MaterialTheme.colors.background) {
+                        val navController = rememberNavController()
 
-                    Scaffold(
-                        bottomBar = { BottomNavigationMenu(navController) }
-                    ) {
-                        it.hashCode()
+                        Scaffold(
+                            bottomBar = { BottomNavigationMenu(navController) }
+                        ) {
+                            it.hashCode()
+                            NavHost(
+                                navController = navController,
+                                startDestination = Navigation.Root.destination,
+                            ) {
+                                buildNavigation(navController)
+                            }
+                        }
+                    }
+                } else {
+                    Surface(color = MaterialTheme.colors.background) {
+                        val navController = rememberNavController()
+
                         NavHost(
                             navController = navController,
                             startDestination = Navigation.Root.destination,
