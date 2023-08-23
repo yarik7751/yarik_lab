@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import com.joy.yariklab.R
 import com.joy.yariklab.features.common.logo.StartTitle
 import com.joy.yariklab.navigation.FlowCoordinator
-import com.joy.yariklab.toolskit.EMPTY_STRING
 import com.joy.yariklab.ui.theme.DefaultButton
 import com.joy.yariklab.ui.theme.DefaultTextField
 import com.joy.yariklab.uikit.LabProgressBar
@@ -44,7 +42,9 @@ fun LoginScreen(
         LabProgressBar()
     }
 
-    LoginScreenInfo()
+    LoginScreenInfo(
+        viewModel = viewModel
+    )
 
     LaunchedEffect(key1 = Unit) {
         viewModel.singleEvents.collectLatest { event ->
@@ -65,7 +65,8 @@ fun LoginScreenPreview() {
 
 @Composable
 fun LoginScreenInfo(
-    background: Color = Color.Transparent
+    background: Color = Color.Transparent,
+    viewModel: LoginViewModel? = null,
 ) {
     Box(
         modifier = Modifier
@@ -84,7 +85,7 @@ fun LoginScreenInfo(
                 )
                 .align(Alignment.Center),
         ) {
-            LoginActions()
+            LoginActions(viewModel)
 
             DefaultButton(
                 modifier = Modifier
@@ -93,7 +94,7 @@ fun LoginScreenInfo(
                         top = 8.dp,
                     ),
                 onClick = {
-                    // TODO send request for login
+                    viewModel?.onLoginAction()
                 }
             ) {
                 Text(text = stringResource(id = R.string.start_login))
@@ -102,23 +103,27 @@ fun LoginScreenInfo(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginActions() {
-    var loginValue by rememberSaveable { mutableStateOf(EMPTY_STRING) }
+fun LoginActions(
+    viewModel: LoginViewModel?,
+) {
+    var loginValue by rememberSaveable { mutableStateOf(/*EMPTY_STRING*/"+48570234871") }
+    viewModel?.onLoginChanged(loginValue)
     DefaultTextField(
         modifier = Modifier
             .fillMaxWidth(),
         value = loginValue,
         onValueChange = { newText ->
             loginValue = newText
+            viewModel?.onLoginChanged(loginValue)
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         label = stringResource(id = R.string.sign_in_login_label),
         placeholder = stringResource(id = R.string.sign_in_login_hint),
     )
 
-    var passwordValue by rememberSaveable { mutableStateOf(EMPTY_STRING) }
+    var passwordValue by rememberSaveable { mutableStateOf(/*EMPTY_STRING*/"qwerty123") }
+    viewModel?.onPasswordChanged(passwordValue)
     DefaultTextField(
         modifier = Modifier
             .fillMaxWidth()
@@ -128,6 +133,7 @@ fun LoginActions() {
         value = passwordValue,
         onValueChange = { newText ->
             passwordValue = newText
+            viewModel?.onPasswordChanged(passwordValue)
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         visualTransformation = PasswordVisualTransformation(),

@@ -4,20 +4,23 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.joy.yariklab.archkit.DispatchersProvider
 import com.joy.yariklab.archkit.DispatchersProviderImpl
-import com.joy.yariklab.core.api.getOkHttpClient
-import com.joy.yariklab.core.api.getRetorfitInstance
 import com.joy.yariklab.core.api.service.CurrenciesRemote
 import com.joy.yariklab.core.cache.db.CurrenciesDatabase
 import com.joy.yariklab.core.cache.keyvalue.AppSettings
 import com.joy.yariklab.core.cache.keyvalue.AppSettingsImpl
 import com.joy.yariklab.core.data.CurrencyRepositoryImpl
+import com.joy.yariklab.core.data.SignInUpRepositoryImpl
 import com.joy.yariklab.core.domain.interactor.CurrencyInteractor
 import com.joy.yariklab.core.domain.interactor.CurrencyInteractorImpl
 import com.joy.yariklab.core.domain.interactor.MusicInteractor
 import com.joy.yariklab.core.domain.interactor.MusicInteractorImpl
 import com.joy.yariklab.core.domain.repository.CurrencyRepository
+import com.joy.yariklab.core.domain.repository.SignInUpRepository
+import com.joy.yariklab.core.domain.usecase.LoginUserUseCase
 import com.joy.yariklab.core.local.CurrencyCache
 import com.joy.yariklab.core.local.CurrencyCacheImpl
+import com.joy.yariklab.core.local.JoyLoveCache
+import com.joy.yariklab.core.local.JoyLoveCacheImpl
 import com.joy.yariklab.core.provider.MusicProvider
 import com.joy.yariklab.core.provider.MusicProviderImpl
 import com.joy.yariklab.features.common.ErrorEmitter
@@ -50,21 +53,6 @@ val appModule = module {
     }
 
     viewModel {
-        RegistrationViewModel(
-            errorEmitter = get(),
-        )
-    }
-    viewModel {
-        StartViewModel(
-            errorEmitter = get(),
-        )
-    }
-    viewModel {
-        LoginViewModel(
-            errorEmitter = get(),
-        )
-    }
-    viewModel {
         CurrenciesListViewModel(
             currencyInteractor = get(),
             errorEmitter = get(),
@@ -92,14 +80,20 @@ val appModule = module {
             errorObserver = get(),
         )
     }
-
-    single {
-        getOkHttpClient()
+    viewModel {
+        LoginViewModel(
+            loginUserUseCase = get(),
+            errorEmitter = get(),
+        )
     }
-
-    single {
-        getRetorfitInstance(
-            client = get()
+    viewModel {
+        RegistrationViewModel(
+            errorEmitter = get(),
+        )
+    }
+    viewModel {
+        StartViewModel(
+            errorEmitter = get(),
         )
     }
 
@@ -159,6 +153,26 @@ val appModule = module {
 
     single {
         get<CurrenciesDatabase>().rateDao()
+    }
+
+    single<JoyLoveCache> {
+        JoyLoveCacheImpl(
+            appSettings = get(),
+        )
+    }
+
+    single<SignInUpRepository> {
+        SignInUpRepositoryImpl(
+            dispatchersProvider = get(),
+            remoteService = get(),
+            joyLoveCache = get(),
+        )
+    }
+
+    single {
+        LoginUserUseCase(
+            repository = get(),
+        )
     }
 
     single<MusicProvider> {
