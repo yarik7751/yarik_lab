@@ -5,17 +5,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class MusicSongUi(
-    val status: SongStatus,
-    val url: String,
     val title: String,
     val subtitle: String,
-    val minProcess: Float,
-    val maxProcess: Float,
+    val url: String,
     val currentProcess: Float,
 ) : Parcelable
-
-enum class SongStatus {
-    UNSELECT,
-    PLAY,
-    PAUSE,
-}

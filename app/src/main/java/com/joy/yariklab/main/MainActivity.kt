@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -17,14 +16,11 @@ import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.joy.yariklab.navigation.Navigation
-import com.joy.yariklab.navigation.bottomnavmenu.BottomNavigationMenu
 import com.joy.yariklab.navigation.buildNavigation
 import com.joy.yariklab.toolskit.EMPTY_STRING
 import com.joy.yariklab.ui.theme.YariklabTheme
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.android.ext.android.inject
-
-const val IS_TEST_APP = false
 
 class MainActivity : ComponentActivity() {
 
@@ -43,32 +39,14 @@ class MainActivity : ComponentActivity() {
                 )
             }
             YariklabTheme {
-                if (IS_TEST_APP) {
-                    Surface(color = MaterialTheme.colors.background) {
-                        val navController = rememberNavController()
+                Surface(color = MaterialTheme.colors.background) {
+                    val navController = rememberNavController()
 
-                        Scaffold(
-                            bottomBar = { BottomNavigationMenu(navController) }
-                        ) {
-                            it.hashCode()
-                            NavHost(
-                                navController = navController,
-                                startDestination = Navigation.Root.destination,
-                            ) {
-                                buildNavigation(navController)
-                            }
-                        }
-                    }
-                } else {
-                    Surface(color = MaterialTheme.colors.background) {
-                        val navController = rememberNavController()
-
-                        NavHost(
-                            navController = navController,
-                            startDestination = Navigation.Root.destination,
-                        ) {
-                            buildNavigation(navController)
-                        }
+                    NavHost(
+                        navController = navController,
+                        startDestination = Navigation.Root.destination,
+                    ) {
+                        buildNavigation(navController)
                     }
                 }
             }

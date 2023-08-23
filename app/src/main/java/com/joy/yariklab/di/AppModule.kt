@@ -4,77 +4,28 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.joy.yariklab.archkit.DispatchersProvider
 import com.joy.yariklab.archkit.DispatchersProviderImpl
-import com.joy.yariklab.core.api.service.CurrenciesRemote
-import com.joy.yariklab.core.cache.db.CurrenciesDatabase
 import com.joy.yariklab.core.cache.keyvalue.AppSettings
 import com.joy.yariklab.core.cache.keyvalue.AppSettingsImpl
-import com.joy.yariklab.core.data.CurrencyRepositoryImpl
 import com.joy.yariklab.core.data.SignInUpRepositoryImpl
-import com.joy.yariklab.core.domain.interactor.CurrencyInteractor
-import com.joy.yariklab.core.domain.interactor.CurrencyInteractorImpl
-import com.joy.yariklab.core.domain.interactor.MusicInteractor
-import com.joy.yariklab.core.domain.interactor.MusicInteractorImpl
-import com.joy.yariklab.core.domain.repository.CurrencyRepository
 import com.joy.yariklab.core.domain.repository.SignInUpRepository
 import com.joy.yariklab.core.domain.usecase.LoginUserUseCase
-import com.joy.yariklab.core.local.CurrencyCache
-import com.joy.yariklab.core.local.CurrencyCacheImpl
 import com.joy.yariklab.core.local.JoyLoveCache
 import com.joy.yariklab.core.local.JoyLoveCacheImpl
-import com.joy.yariklab.core.provider.MusicProvider
-import com.joy.yariklab.core.provider.MusicProviderImpl
 import com.joy.yariklab.features.common.ErrorEmitter
 import com.joy.yariklab.features.common.ErrorObserver
 import com.joy.yariklab.features.common.ErrorObserverImpl
-import com.joy.yariklab.features.curencydetails.CurrencyDetailsViewModel
-import com.joy.yariklab.features.currencieslist.CurrenciesListViewModel
 import com.joy.yariklab.features.login.LoginViewModel
-import com.joy.yariklab.features.music.MusicViewModel
 import com.joy.yariklab.features.player.observer.PlayerEmitter
 import com.joy.yariklab.features.player.observer.PlayerObserver
 import com.joy.yariklab.features.player.observer.PlayerObserverImpl
 import com.joy.yariklab.features.registration.RegistrationViewModel
 import com.joy.yariklab.features.start.StartViewModel
-import com.joy.yariklab.features.weather.WeatherViewModel
 import com.joy.yariklab.main.MainViewModel
-import com.joy.yariklab.workmanager.CheckCurrencyDataWorker
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.androidx.workmanager.dsl.worker
 import org.koin.dsl.binds
 import org.koin.dsl.module
 
 val appModule = module {
-    worker {
-        CheckCurrencyDataWorker(
-            context = get(),
-            params = get(),
-            currencyInteractor = get(),
-        )
-    }
-
-    viewModel {
-        CurrenciesListViewModel(
-            currencyInteractor = get(),
-            errorEmitter = get(),
-        )
-    }
-    viewModel {
-        CurrencyDetailsViewModel(
-            currencyCode = it.get(),
-            currencyInteractor = get(),
-            errorEmitter = get(),
-        )
-    }
-    viewModel {
-        MusicViewModel(
-            musicInteractor = get(),
-            errorEmitter = get(),
-            playerObserver = get(),
-        )
-    }
-    viewModel {
-        WeatherViewModel()
-    }
     viewModel {
         MainViewModel(
             errorObserver = get(),
@@ -107,53 +58,13 @@ val appModule = module {
         )
     }
 
-    single {
-        CurrenciesRemote.getInstance(retrofit = get())
-    }
-
     single<DispatchersProvider> {
         DispatchersProviderImpl()
     }
 
-    single<CurrencyRepository> {
-        CurrencyRepositoryImpl(
-            dispatchersProvider = get(),
-            currenciesRemote = get(),
-            currencyCache = get(),
-        )
-    }
-
-    single<CurrencyInteractor> {
-        CurrencyInteractorImpl(
-            currencyRepository = get(),
-        )
-    }
-
-    single<MusicInteractor> {
-        MusicInteractorImpl(
-            musicProvider = get(),
-        )
-    }
-
-    single<CurrencyCache> {
-        CurrencyCacheImpl(
-            appSettings = get(),
-            currencyDao = get(),
-            rateDao = get(),
-        )
-    }
-
-    single {
-        CurrenciesDatabase.newInstance(get())
-    }
-
-    single {
-        get<CurrenciesDatabase>().currencyDao()
-    }
-
-    single {
-        get<CurrenciesDatabase>().rateDao()
-    }
+    /*single {
+        JoyLoveDatabase.newInstance(get())
+    }*/
 
     single<JoyLoveCache> {
         JoyLoveCacheImpl(
@@ -173,10 +84,6 @@ val appModule = module {
         LoginUserUseCase(
             repository = get(),
         )
-    }
-
-    single<MusicProvider> {
-        MusicProviderImpl()
     }
 
     single {
