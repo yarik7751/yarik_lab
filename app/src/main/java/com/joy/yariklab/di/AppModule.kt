@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.joy.yariklab.archkit.DispatchersProvider
 import com.joy.yariklab.archkit.DispatchersProviderImpl
-import com.joy.yariklab.core.cache.db.CurrenciesDatabase
 import com.joy.yariklab.core.cache.keyvalue.AppSettings
 import com.joy.yariklab.core.cache.keyvalue.AppSettingsImpl
 import com.joy.yariklab.core.data.SignInUpRepositoryImpl
@@ -63,17 +62,9 @@ val appModule = module {
         DispatchersProviderImpl()
     }
 
-    single {
-        CurrenciesDatabase.newInstance(get())
-    }
-
-    single {
-        get<CurrenciesDatabase>().currencyDao()
-    }
-
-    single {
-        get<CurrenciesDatabase>().rateDao()
-    }
+    /*single {
+        JoyLoveDatabase.newInstance(get())
+    }*/
 
     single<JoyLoveCache> {
         JoyLoveCacheImpl(
