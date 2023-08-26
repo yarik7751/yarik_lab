@@ -6,9 +6,13 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import java.util.concurrent.TimeUnit
 
 fun getJoyLoveOkHttpClient(): OkHttpClient {
     return OkHttpClient.Builder()
+        .callTimeout(60, TimeUnit.MINUTES)
+        .readTimeout(60, TimeUnit.MINUTES)
+        .connectTimeout(60, TimeUnit.MINUTES)
         .addInterceptor(
             HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY

@@ -1,8 +1,8 @@
-package com.joy.yariklab.core.domain.repository
+package com.joy.yariklab.core.domain.interactor
 
 import com.joy.yariklab.core.api.model.joylove.RegistrationParamsRemote
 
-interface SignInUpRepository {
+interface SignInUpInteractor {
 
     suspend fun login(
         login: String,

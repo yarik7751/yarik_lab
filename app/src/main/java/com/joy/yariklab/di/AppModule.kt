@@ -7,8 +7,9 @@ import com.joy.yariklab.archkit.DispatchersProviderImpl
 import com.joy.yariklab.core.cache.keyvalue.AppSettings
 import com.joy.yariklab.core.cache.keyvalue.AppSettingsImpl
 import com.joy.yariklab.core.data.SignInUpRepositoryImpl
+import com.joy.yariklab.core.domain.interactor.SignInUpInteractor
+import com.joy.yariklab.core.domain.interactor.SignInUpInteractorImpl
 import com.joy.yariklab.core.domain.repository.SignInUpRepository
-import com.joy.yariklab.core.domain.usecase.LoginUserUseCase
 import com.joy.yariklab.core.local.JoyLoveCache
 import com.joy.yariklab.core.local.JoyLoveCacheImpl
 import com.joy.yariklab.features.common.ErrorEmitter
@@ -33,12 +34,13 @@ val appModule = module {
     }
     viewModel {
         LoginViewModel(
-            loginUserUseCase = get(),
+            signInUpInteractor = get(),
             errorEmitter = get(),
         )
     }
     viewModel {
         RegistrationViewModel(
+            signInUpInteractor = get(),
             errorEmitter = get(),
         )
     }
@@ -80,8 +82,8 @@ val appModule = module {
         )
     }
 
-    single {
-        LoginUserUseCase(
+    single<SignInUpInteractor> {
+        SignInUpInteractorImpl(
             repository = get(),
         )
     }

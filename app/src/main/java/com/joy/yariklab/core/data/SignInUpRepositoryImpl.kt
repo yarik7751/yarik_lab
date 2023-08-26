@@ -2,6 +2,8 @@ package com.joy.yariklab.core.data
 
 import com.joy.yariklab.archkit.DispatchersProvider
 import com.joy.yariklab.core.api.model.joylove.LoginParamsRemote
+import com.joy.yariklab.core.api.model.joylove.RegistrationParamsRemote
+import com.joy.yariklab.core.api.model.joylove.UserTokensRemote
 import com.joy.yariklab.core.api.service.JoyLoveRemoteService
 import com.joy.yariklab.core.data.model.joylove.UserTokens
 import com.joy.yariklab.core.domain.repository.SignInUpRepository
@@ -24,14 +26,22 @@ class SignInUpRepositoryImpl(
                     login = login,
                     password = password,
                 )
-            ).let { remote ->
-                UserTokens(
-                    token = remote.token,
-                    refreshToken = remote.refreshToken,
-                )
-            }.let {
-                joyLoveCache.saveTokens(it)
-            }
+            ).saveTokens()
+        }
+    }
+
+    override suspend fun register(params: RegistrationParamsRemote) {
+        withContext(dispatchersProvider.background()) {
+            remoteService.register(params).saveTokens()
+        }
+    }
+
+    private suspend fun UserTokensRemote.saveTokens() {
+        UserTokens(
+            token = this.token,
+            refreshToken = this.refreshToken,
+        ).let {
+            joyLoveCache.saveTokens(it)
         }
     }
 }

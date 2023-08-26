@@ -22,7 +22,7 @@ fun DefaultTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    singleLine: Boolean = false,
+    singleLine: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
     label: String = EMPTY_STRING,
     placeholder: String = EMPTY_STRING,

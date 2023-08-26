@@ -3,6 +3,7 @@ package com.joy.yariklab.features.registration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,6 +41,7 @@ import com.joy.yariklab.uikit.LabProgressBar
 import com.joy.yariklab.uikit.simplePadding
 import kotlinx.coroutines.flow.collectLatest
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrationScreen(
     viewModel: RegistrationViewModel,
@@ -50,7 +53,9 @@ fun RegistrationScreen(
         LabProgressBar()
     }
 
-    RegistrationInfo()
+    RegistrationInfo(
+        viewModel = viewModel,
+    )
 
     LaunchedEffect(key1 = Unit) {
         viewModel.singleEvents.collectLatest { event ->
@@ -87,13 +92,13 @@ fun RegistrationInfo(
             this.align(Alignment.CenterHorizontally)
         }
 
-        RegistrationNameBirthDate()
+        RegistrationNameBirthDate(viewModel)
         RegistrationLogo()
         RegistrationVideo()
-        RegistrationPassword()
-        RegistrationEmail()
-        RegistrationPhone()
-        RegistrationSex()
+        RegistrationPassword(viewModel)
+        RegistrationEmail(viewModel)
+        RegistrationPhone(viewModel)
+        RegistrationSex(viewModel)
 
         DefaultButton(
             modifier = Modifier
@@ -102,7 +107,7 @@ fun RegistrationInfo(
                     top = 8.dp,
                 ),
             onClick = {
-                // TODO send request for login
+                viewModel?.onRegistrationAction()
             }
         ) {
             Text(text = stringResource(id = R.string.sign_up_register_action))
@@ -111,7 +116,9 @@ fun RegistrationInfo(
 }
 
 @Composable
-fun RegistrationNameBirthDate() {
+fun RegistrationNameBirthDate(
+    viewModel: RegistrationViewModel?,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -125,6 +132,7 @@ fun RegistrationNameBirthDate() {
             value = nameValue,
             onValueChange = { newText ->
                 nameValue = newText
+                viewModel?.onNameChanged(nameValue)
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             label = stringResource(id = R.string.sign_up_name_label),
@@ -135,7 +143,10 @@ fun RegistrationNameBirthDate() {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1F)
-                .simplePadding(start = 4.dp),
+                .simplePadding(start = 4.dp)
+                .clickable {
+                    this.hashCode()
+                },
             value = stringResource(id = R.string.sign_up_birth_date_label),
             onValueChange = {},
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
@@ -190,14 +201,17 @@ fun RegistrationVideo() {
 }
 
 @Composable
-fun RegistrationPassword() {
-    var nameValue by rememberSaveable { mutableStateOf(EMPTY_STRING) }
+fun RegistrationPassword(
+    viewModel: RegistrationViewModel?,
+) {
+    var passwordValue by rememberSaveable { mutableStateOf(EMPTY_STRING) }
     DefaultTextField(
         modifier = Modifier
             .fillMaxWidth(),
-        value = nameValue,
+        value = passwordValue,
         onValueChange = { newText ->
-            nameValue = newText
+            passwordValue = newText
+            viewModel?.onPasswordChanged(passwordValue)
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         visualTransformation = PasswordVisualTransformation(),
@@ -206,7 +220,9 @@ fun RegistrationPassword() {
 }
 
 @Composable
-fun RegistrationEmail() {
+fun RegistrationEmail(
+    viewModel: RegistrationViewModel?,
+) {
     var emailValue by rememberSaveable { mutableStateOf(EMPTY_STRING) }
     DefaultTextField(
         modifier = Modifier
@@ -214,6 +230,7 @@ fun RegistrationEmail() {
         value = emailValue,
         onValueChange = { newText ->
             emailValue = newText
+            viewModel?.onEmailChanged(emailValue)
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         label = stringResource(id = R.string.sign_up_email_label),
@@ -222,7 +239,9 @@ fun RegistrationEmail() {
 }
 
 @Composable
-fun RegistrationPhone() {
+fun RegistrationPhone(
+    viewModel: RegistrationViewModel?,
+) {
     var mobilePhoneValue by rememberSaveable { mutableStateOf(EMPTY_STRING) }
     DefaultTextField(
         modifier = Modifier
@@ -230,6 +249,7 @@ fun RegistrationPhone() {
         value = mobilePhoneValue,
         onValueChange = { newText ->
             mobilePhoneValue = newText
+            viewModel?.onPhoneChanged(mobilePhoneValue)
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
         label = stringResource(id = R.string.sign_up_phone_label),
@@ -238,7 +258,9 @@ fun RegistrationPhone() {
 }
 
 @Composable
-fun RegistrationSex() {
+fun RegistrationSex(
+    viewModel: RegistrationViewModel?,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -251,6 +273,7 @@ fun RegistrationSex() {
             checked = switchCheckedState,
             onCheckedChange = {
                 switchCheckedState = it
+                viewModel?.onSexChanged(switchCheckedState)
             }
         )
 
@@ -260,7 +283,7 @@ fun RegistrationSex() {
                     start = 8.dp,
                 )
                 .align(Alignment.CenterVertically),
-            text = stringResource(id = R.string.sign_up_birth_video_label),
+            text = stringResource(id = R.string.sign_up_select_your_sex),
         )
     }
 }

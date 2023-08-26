@@ -21,7 +21,10 @@
     <string name="sign_up_phone_label">Mobile phone</string>
     <string name="sign_up_phone_hint">Enter mobile phone ...</string>
     <string name="sign_up_birth_logo_label">Upload your logo ...</string>
-    <string name="sign_up_birth_video_label">Upload your logo ...</string>
+    <string name="sign_up_birth_video_label">Upload your video ...</string>
+    <string name="sign_up_select_your_sex">Select your sex ...</string>
+    <string name="sign_up_male">Male</string>
+    <string name="sign_up_female">Female</string>
 
     <string name="sign_up_register_action">Register</string>
 </resources>
