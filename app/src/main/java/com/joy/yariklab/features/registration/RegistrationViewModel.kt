@@ -35,6 +35,7 @@ class RegistrationViewModel(
     )
 
     sealed interface Event {
+        object GoToUserList : Event
         data class ShowValidationErrorDialog(val message: String) : Event
     }
 
@@ -93,6 +94,8 @@ class RegistrationViewModel(
                     sex = stateValue.sex.sexId,
                 )
             )
+
+            sendEvent(Event.GoToUserList)
         }.invokeOnCompletion {
             viewModelScope.reduce {
                 it.copy(isLoading = false)

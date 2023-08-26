@@ -22,7 +22,9 @@ class LoginViewModel(
         val password: String = EMPTY_STRING,
     )
 
-    sealed interface Event
+    sealed interface Event {
+        object GoToUserList : Event
+    }
 
     fun onLoginChanged(login: String) {
         viewModelScope.reduce {
@@ -45,6 +47,8 @@ class LoginViewModel(
                 login = stateValue.login,
                 password = stateValue.password,
             )
+
+            sendEvent(Event.GoToUserList)
         }.invokeOnCompletion {
             viewModelScope.reduce {
                 it.copy(isLoading = false)

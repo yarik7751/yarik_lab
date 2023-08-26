@@ -21,6 +21,7 @@ import com.joy.yariklab.features.player.observer.PlayerObserver
 import com.joy.yariklab.features.player.observer.PlayerObserverImpl
 import com.joy.yariklab.features.registration.RegistrationViewModel
 import com.joy.yariklab.features.start.StartViewModel
+import com.joy.yariklab.features.userlist.UserListViewModel
 import com.joy.yariklab.main.MainViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.binds
@@ -46,6 +47,11 @@ val appModule = module {
     }
     viewModel {
         StartViewModel(
+            errorEmitter = get(),
+        )
+    }
+    viewModel {
+        UserListViewModel(
             errorEmitter = get(),
         )
     }

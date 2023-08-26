@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.joy.yariklab.R
 import com.joy.yariklab.features.common.logo.StartTitle
+import com.joy.yariklab.features.registration.RegistrationViewModel.Event
 import com.joy.yariklab.navigation.FlowCoordinator
 import com.joy.yariklab.toolskit.EMPTY_STRING
 import com.joy.yariklab.ui.theme.DefaultButton
@@ -41,7 +41,6 @@ import com.joy.yariklab.uikit.LabProgressBar
 import com.joy.yariklab.uikit.simplePadding
 import kotlinx.coroutines.flow.collectLatest
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrationScreen(
     viewModel: RegistrationViewModel,
@@ -61,7 +60,10 @@ fun RegistrationScreen(
     LaunchedEffect(key1 = Unit) {
         viewModel.singleEvents.collectLatest { event ->
             when (event) {
-                else -> {}
+                Event.GoToUserList -> {
+                    flowCoordinator.goToUserList()
+                }
+                is Event.ShowValidationErrorDialog -> TODO()
             }
         }
     }

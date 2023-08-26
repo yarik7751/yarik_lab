@@ -7,6 +7,7 @@ import androidx.navigation.navigation
 import com.joy.yariklab.features.login.LoginScreen
 import com.joy.yariklab.features.registration.RegistrationScreen
 import com.joy.yariklab.features.start.StartScreen
+import com.joy.yariklab.features.userlist.UserListScreen
 import org.koin.androidx.compose.koinViewModel
 
 fun NavGraphBuilder.buildNavigation(navController: NavController) {
@@ -41,6 +42,15 @@ fun NavGraphBuilder.buildNavigation(navController: NavController) {
             route = Navigation.Registration.destination
         ) {
             RegistrationScreen(
+                viewModel = koinViewModel(),
+                flowCoordinator = flowCoordinator,
+            )
+        }
+
+        composable(
+            route = Navigation.UserList.destination
+        ) {
+            UserListScreen(
                 viewModel = koinViewModel(),
                 flowCoordinator = flowCoordinator,
             )
