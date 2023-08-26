@@ -55,6 +55,7 @@ fun RegistrationScreen(
 
     RegistrationInfo(
         viewModel = viewModel,
+        state = state.value,
     )
 
     LaunchedEffect(key1 = Unit) {
@@ -71,6 +72,7 @@ fun RegistrationScreen(
 fun RegistrationScreenPreview() {
     RegistrationInfo(
         background = Color.White,
+        state = RegistrationViewModel.ViewState()
     )
 }
 
@@ -78,6 +80,7 @@ fun RegistrationScreenPreview() {
 fun RegistrationInfo(
     background: Color = Color.Transparent,
     viewModel: RegistrationViewModel? = null,
+    state: RegistrationViewModel.ViewState,
 ) {
     Column(
         modifier = Modifier
@@ -98,7 +101,7 @@ fun RegistrationInfo(
         RegistrationPassword(viewModel)
         RegistrationEmail(viewModel)
         RegistrationPhone(viewModel)
-        RegistrationSex(viewModel)
+        RegistrationSex(viewModel, state)
 
         DefaultButton(
             modifier = Modifier
@@ -251,7 +254,7 @@ fun RegistrationPhone(
             mobilePhoneValue = newText
             viewModel?.onPhoneChanged(mobilePhoneValue)
         },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
         label = stringResource(id = R.string.sign_up_phone_label),
         placeholder = stringResource(id = R.string.sign_up_phone_hint),
     )
@@ -260,6 +263,7 @@ fun RegistrationPhone(
 @Composable
 fun RegistrationSex(
     viewModel: RegistrationViewModel?,
+    state: RegistrationViewModel.ViewState,
 ) {
     Row(
         modifier = Modifier
@@ -283,7 +287,7 @@ fun RegistrationSex(
                     start = 8.dp,
                 )
                 .align(Alignment.CenterVertically),
-            text = stringResource(id = R.string.sign_up_select_your_sex),
+            text = stringResource(id = state.sex.titleRes),
         )
     }
 }
