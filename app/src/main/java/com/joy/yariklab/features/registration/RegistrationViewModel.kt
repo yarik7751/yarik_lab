@@ -11,7 +11,9 @@ import com.joy.yariklab.features.common.ErrorEmitter
 import com.joy.yariklab.features.registration.RegistrationViewModel.Event
 import com.joy.yariklab.features.registration.RegistrationViewModel.ViewState
 import com.joy.yariklab.features.registration.model.UserSex
+import com.joy.yariklab.toolskit.DATE_FORMAT_YYYY_MM_DD
 import com.joy.yariklab.toolskit.EMPTY_STRING
+import com.joy.yariklab.toolskit.dateToString
 import java.util.Date
 
 class RegistrationViewModel(
@@ -87,7 +89,7 @@ class RegistrationViewModel(
                     mobilePhone = stateValue.phone,
                     name = stateValue.name,
                     password = stateValue.password,
-                    registrationDate = "2023-07-29",
+                    registrationDate = Date().dateToString(DATE_FORMAT_YYYY_MM_DD),
                     sex = stateValue.sex.sexId,
                 )
             )
