@@ -23,6 +23,8 @@ import com.joy.yariklab.features.registration.RegistrationViewModel
 import com.joy.yariklab.features.start.StartViewModel
 import com.joy.yariklab.features.userlist.UserListViewModel
 import com.joy.yariklab.main.MainViewModel
+import com.joy.yariklab.platformtoolskit.ResourceProvider
+import com.joy.yariklab.platformtoolskit.ResourceProviderImpl
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.binds
 import org.koin.dsl.module
@@ -43,6 +45,7 @@ val appModule = module {
         RegistrationViewModel(
             signInUpInteractor = get(),
             errorEmitter = get(),
+            resourceProvider = get(),
         )
     }
     viewModel {
@@ -68,6 +71,12 @@ val appModule = module {
 
     single<DispatchersProvider> {
         DispatchersProviderImpl()
+    }
+
+    single<ResourceProvider> {
+        ResourceProviderImpl(
+            context = get(),
+        )
     }
 
     /*single {

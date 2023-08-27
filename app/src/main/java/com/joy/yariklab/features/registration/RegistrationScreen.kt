@@ -11,10 +11,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +44,8 @@ import com.joy.yariklab.navigation.FlowCoordinator
 import com.joy.yariklab.toolskit.EMPTY_STRING
 import com.joy.yariklab.ui.theme.DefaultButton
 import com.joy.yariklab.ui.theme.DefaultTextField
+import com.joy.yariklab.ui.theme.Magenta
+import com.joy.yariklab.ui.theme.Pink80
 import com.joy.yariklab.uikit.LabProgressBar
 import com.joy.yariklab.uikit.simplePadding
 import kotlinx.coroutines.flow.collectLatest
@@ -47,6 +56,7 @@ fun RegistrationScreen(
     flowCoordinator: FlowCoordinator,
 ) {
     val state = viewModel.viewState.collectAsState()
+    val openDialog = remember { mutableStateOf(false) }
 
     if (state.value.isLoading) {
         LabProgressBar()
@@ -57,6 +67,11 @@ fun RegistrationScreen(
         state = state.value,
     )
 
+    DateDialog(
+        openDialog = openDialog,
+        viewModel = viewModel,
+    )
+
     LaunchedEffect(key1 = Unit) {
         viewModel.singleEvents.collectLatest { event ->
             when (event) {
@@ -64,7 +79,49 @@ fun RegistrationScreen(
                     flowCoordinator.goToUserList()
                 }
                 is Event.ShowValidationErrorDialog -> TODO()
+                Event.ShowDataPickerDialog -> {
+                    openDialog.value = true
+                }
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DateDialog(
+    openDialog: MutableState<Boolean>,
+    viewModel: RegistrationViewModel,
+) {
+    if (openDialog.value) {
+        val datePickerState = rememberDatePickerState()
+        DatePickerDialog(
+            onDismissRequest = {
+                openDialog.value = false
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                        datePickerState.selectedDateMillis?.let {
+                            viewModel.onBirthDateChanged(it)
+                        }
+                    },
+                ) {
+                    Text("OK")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                    }
+                ) {
+                    Text("Cancel")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
         }
     }
 }
@@ -74,7 +131,9 @@ fun RegistrationScreen(
 fun RegistrationScreenPreview() {
     RegistrationInfo(
         background = Color.White,
-        state = RegistrationViewModel.ViewState()
+        state = RegistrationViewModel.ViewState(
+            birthDate = null to "test date",
+        )
     )
 }
 
@@ -97,7 +156,7 @@ fun RegistrationInfo(
             this.align(Alignment.CenterHorizontally)
         }
 
-        RegistrationNameBirthDate(viewModel)
+        RegistrationNameBirthDate(viewModel, state)
         RegistrationLogo()
         RegistrationVideo()
         RegistrationPassword(viewModel)
@@ -120,9 +179,11 @@ fun RegistrationInfo(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrationNameBirthDate(
     viewModel: RegistrationViewModel?,
+    state: RegistrationViewModel.ViewState,
 ) {
     Row(
         modifier = Modifier
@@ -150,11 +211,18 @@ fun RegistrationNameBirthDate(
                 .weight(1F)
                 .simplePadding(start = 4.dp)
                 .clickable {
-                    this.hashCode()
+                    viewModel?.onBirthDateAction()
                 },
-            value = stringResource(id = R.string.sign_up_birth_date_label),
+            value = state.birthDate.second,
+            enabled = false,
             onValueChange = {},
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Magenta,
+                unfocusedBorderColor = Pink80,
+                disabledBorderColor = Pink80,
+                disabledTextColor = Color.Black,
+            )
         )
     }
 }

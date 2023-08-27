@@ -4,8 +4,9 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.VisualTransformation
@@ -26,6 +27,10 @@ fun DefaultTextField(
     maxLines: Int = Int.MAX_VALUE,
     label: String = EMPTY_STRING,
     placeholder: String = EMPTY_STRING,
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(
+        focusedBorderColor = Magenta,
+        unfocusedBorderColor = Pink80
+    )
 ) {
     OutlinedTextField(
         modifier = modifier,
@@ -45,9 +50,6 @@ fun DefaultTextField(
             )
         },
         placeholder = { Text(text = placeholder) },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Magenta,
-            unfocusedBorderColor = Pink80
-        )
+        colors = colors,
     )
 }

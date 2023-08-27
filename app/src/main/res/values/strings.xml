@@ -12,7 +12,7 @@
     <string name="sign_in_password_label">Password</string>
     <string name="sign_in_password_hint">Enter password ...</string>
 
-    <string name="sign_up_birth_date_label">Birth date</string>
+    <string name="sign_up_birth_date_label">Select your birth date ...</string>
     <string name="sign_up_name_label">Name</string>
     <string name="sign_up_name_hint">Enter name ...</string>
     <string name="sign_up_password_label">Password</string>
