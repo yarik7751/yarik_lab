@@ -22,7 +22,7 @@ import java.util.Date
 class RegistrationViewModel(
     private val signInUpInteractor: SignInUpInteractor,
     private val errorEmitter: ErrorEmitter,
-    resourceProvider: ResourceProvider,
+    private val resourceProvider: ResourceProvider,
 ) : ViewModel(), ViewStateDelegate<ViewState, Event> by ViewStateDelegateImpl(
     ViewState(
         birthDate = null to resourceProvider.getString(R.string.sign_up_birth_date_label)
@@ -37,7 +37,7 @@ class RegistrationViewModel(
         val videoPath: String = EMPTY_STRING,
         val password: String = EMPTY_STRING,
         val email: String = EMPTY_STRING,
-        val phone: String = EMPTY_STRING,
+        val mobilePhone: String = EMPTY_STRING,
         val sex: UserSex = UserSex.NOT_SELECTED,
 
         )
@@ -84,7 +84,7 @@ class RegistrationViewModel(
 
     fun onPhoneChanged(phone: String) {
         viewModelScope.reduce {
-            it.copy(phone = phone)
+            it.copy(mobilePhone = phone)
         }
     }
 
@@ -99,6 +99,7 @@ class RegistrationViewModel(
 
     fun onRegistrationAction() {
         viewModelScope.safeLaunch(errorEmitter::emit) {
+            validateRegistrationData()?.let { throw it }
             reduce {
                 it.copy(isLoading = true)
             }
@@ -113,7 +114,7 @@ class RegistrationViewModel(
                     longitude = 0F,
                     logoPath = /*tateValue.avatarPath*/"avaters/testavatar",
                     videoPath = /*stateValue.videoPath*/"videos/testvideo",
-                    mobilePhone = stateValue.phone,
+                    mobilePhone = stateValue.mobilePhone,
                     name = stateValue.name,
                     password = stateValue.password,
                     registrationDate = Date().dateToString(DATE_FORMAT_YYYY_MM_DD),
@@ -127,5 +128,38 @@ class RegistrationViewModel(
                 it.copy(isLoading = false)
             }
         }
+    }
+
+    private fun validateRegistrationData(): Throwable? {
+        val message = when {
+            stateValue.name.isBlank() -> {
+                resourceProvider.getString(R.string.sign_up_name_error)
+            }
+            stateValue.birthDate.first == null -> {
+                resourceProvider.getString(R.string.sign_up_birth_date_error)
+            }
+            // TODO add requests for avatar and video
+            /*stateValue.avatarPath.isBlank() -> {
+                resourceProvider.getString(R.string.sign_up_logo_error)
+            }
+            stateValue.videoPath.isBlank() -> {
+                resourceProvider.getString(R.string.sign_up_video_error)
+            }*/
+            stateValue.password.isBlank() -> {
+                resourceProvider.getString(R.string.sign_up_password_error)
+            }
+            stateValue.email.isBlank() -> {
+                resourceProvider.getString(R.string.sign_up_email_error)
+            }
+            stateValue.mobilePhone.isBlank() -> {
+                resourceProvider.getString(R.string.sign_up_phone_error)
+            }
+            stateValue.sex == UserSex.NOT_SELECTED -> {
+                resourceProvider.getString(R.string.sign_up_sex_error)
+            }
+            else -> return null
+        }
+
+        return RuntimeException(message)
     }
 }

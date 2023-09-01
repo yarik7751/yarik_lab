@@ -13,16 +13,24 @@
     <string name="sign_in_password_hint">Enter password ...</string>
 
     <string name="sign_up_birth_date_label">Select your birth date ...</string>
+    <string name="sign_up_birth_date_error">Enter your birth date</string>
     <string name="sign_up_name_label">Name</string>
     <string name="sign_up_name_hint">Enter name ...</string>
+    <string name="sign_up_name_error">Enter your name</string>
     <string name="sign_up_password_label">Password</string>
+    <string name="sign_up_password_error">Enter your password</string>
     <string name="sign_up_email_label">Email</string>
     <string name="sign_up_email_hint">Enter email ...</string>
+    <string name="sign_up_email_error">Enter your email</string>
     <string name="sign_up_phone_label">Mobile phone</string>
     <string name="sign_up_phone_hint">Enter mobile phone ...</string>
+    <string name="sign_up_phone_error">Enter your mobile phone</string>
     <string name="sign_up_birth_logo_label">Upload your logo ...</string>
+    <string name="sign_up_logo_error">Upload your logo</string>
     <string name="sign_up_birth_video_label">Upload your video ...</string>
+    <string name="sign_up_video_error">Upload your video</string>
     <string name="sign_up_select_your_sex">Select your sex ...</string>
+    <string name="sign_up_sex_error">Select your sex</string>
     <string name="sign_up_male">Male</string>
     <string name="sign_up_female">Female</string>
 
