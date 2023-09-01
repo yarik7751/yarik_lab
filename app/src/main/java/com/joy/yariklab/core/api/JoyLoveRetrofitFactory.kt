@@ -8,11 +8,13 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 
+private const val DEFAULT_TIMEOUT_SECONDS = 60L
+
 fun getJoyLoveOkHttpClient(): OkHttpClient {
     return OkHttpClient.Builder()
-        .callTimeout(60, TimeUnit.MINUTES)
-        .readTimeout(60, TimeUnit.MINUTES)
-        .connectTimeout(60, TimeUnit.MINUTES)
+        .callTimeout(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        .readTimeout(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        .connectTimeout(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
         .addInterceptor(
             HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
