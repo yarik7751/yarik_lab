@@ -1,5 +1,8 @@
 package com.joy.yariklab.features.registration
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -22,6 +25,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,6 +61,15 @@ fun RegistrationScreen(
 ) {
     val state = viewModel.viewState.collectAsState()
     val openDialog = remember { mutableStateOf(false) }
+    val openImagePicker = remember { mutableStateOf(false) }
+    val openVideoPicker = remember { mutableStateOf(false) }
+
+    /*DisposableEffect(key1 = viewModel) {
+        viewModel.hashCode()
+        onDispose {
+            viewModel.hashCode()
+        }
+    }*/
 
     if (state.value.isLoading) {
         LabProgressBar()
@@ -65,6 +78,8 @@ fun RegistrationScreen(
     RegistrationInfo(
         viewModel = viewModel,
         state = state.value,
+        openImagePicker = openImagePicker,
+        openVideoPicker = openVideoPicker,
     )
 
     DateDialog(
@@ -72,12 +87,16 @@ fun RegistrationScreen(
         viewModel = viewModel,
     )
 
+    OpenImagePicker(openImagePicker)
+    OpenVideoPicker(openVideoPicker)
+
     LaunchedEffect(key1 = Unit) {
         viewModel.singleEvents.collectLatest { event ->
             when (event) {
                 Event.GoToUserList -> {
                     flowCoordinator.goToUserList()
                 }
+
                 is Event.ShowValidationErrorDialog -> TODO()
                 Event.ShowDataPickerDialog -> {
                     openDialog.value = true
@@ -108,7 +127,7 @@ fun DateDialog(
                         }
                     },
                 ) {
-                    Text("OK")
+                    Text(stringResource(id = R.string.ok))
                 }
             },
             dismissButton = {
@@ -117,11 +136,49 @@ fun DateDialog(
                         openDialog.value = false
                     }
                 ) {
-                    Text("Cancel")
+                    Text(stringResource(id = R.string.cancel))
                 }
             }
         ) {
             DatePicker(state = datePickerState)
+        }
+    }
+}
+
+@Composable
+private fun OpenImagePicker(openImagePicker: MutableState<Boolean>) {
+    if (openImagePicker.value) {
+        val pickMedia = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.PickVisualMedia(),
+            onResult = {
+                it?.let { uri ->
+                    uri.hashCode()
+                }
+                openImagePicker.value = false
+            }
+        )
+
+        SideEffect {
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
+    }
+}
+
+@Composable
+private fun OpenVideoPicker(openVideoPicker: MutableState<Boolean>) {
+    if (openVideoPicker.value) {
+        val pickMedia = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.PickVisualMedia(),
+            onResult = {
+                it?.let { uri ->
+                    uri.hashCode()
+                }
+                openVideoPicker.value = false
+            }
+        )
+
+        SideEffect {
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
         }
     }
 }
@@ -133,7 +190,9 @@ fun RegistrationScreenPreview() {
         background = Color.White,
         state = RegistrationViewModel.ViewState(
             birthDate = null to "test date",
-        )
+        ),
+        openImagePicker = remember { mutableStateOf(false) },
+        openVideoPicker = remember { mutableStateOf(false) },
     )
 }
 
@@ -142,6 +201,8 @@ fun RegistrationInfo(
     background: Color = Color.Transparent,
     viewModel: RegistrationViewModel? = null,
     state: RegistrationViewModel.ViewState,
+    openImagePicker: MutableState<Boolean>,
+    openVideoPicker: MutableState<Boolean>,
 ) {
     Column(
         modifier = Modifier
@@ -157,8 +218,8 @@ fun RegistrationInfo(
         }
 
         RegistrationNameBirthDate(viewModel, state)
-        RegistrationLogo()
-        RegistrationVideo()
+        RegistrationLogo(openImagePicker)
+        RegistrationVideo(openVideoPicker)
         RegistrationPassword(viewModel)
         RegistrationEmail(viewModel)
         RegistrationPhone(viewModel)
@@ -179,7 +240,6 @@ fun RegistrationInfo(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrationNameBirthDate(
     viewModel: RegistrationViewModel?,
@@ -228,7 +288,8 @@ fun RegistrationNameBirthDate(
 }
 
 @Composable
-fun RegistrationLogo() {
+fun RegistrationLogo(openImagePicker: MutableState<Boolean>) {
+    // openImagePicker()
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -236,22 +297,28 @@ fun RegistrationLogo() {
         Image(
             modifier = Modifier
                 .fillMaxWidth(0.25f)
-                .aspectRatio(ratio = 1f),
-            painter =painterResource(id = R.drawable.ic_registration_person),
+                .aspectRatio(ratio = 1f)
+                .clickable {
+                    openImagePicker.value = true
+                },
+            painter = painterResource(id = R.drawable.ic_registration_person),
             contentDescription = "Image for uploaded logo",
         )
 
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.CenterVertically),
+                .align(Alignment.CenterVertically)
+                .clickable {
+                    openImagePicker.value = true
+                },
             text = stringResource(id = R.string.sign_up_birth_logo_label),
         )
     }
 }
 
 @Composable
-fun RegistrationVideo() {
+fun RegistrationVideo(openVideoPicker: MutableState<Boolean>) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -259,15 +326,21 @@ fun RegistrationVideo() {
         Image(
             modifier = Modifier
                 .fillMaxWidth(0.25f)
-                .aspectRatio(ratio = 1f),
-            painter =painterResource(id = R.drawable.ic_registration_video),
+                .aspectRatio(ratio = 1f)
+                .clickable {
+                    openVideoPicker.value = true
+                },
+            painter = painterResource(id = R.drawable.ic_registration_video),
             contentDescription = "Image for uploaded logo",
         )
 
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.CenterVertically),
+                .align(Alignment.CenterVertically)
+                .clickable {
+                    openVideoPicker.value = true
+                },
             text = stringResource(id = R.string.sign_up_birth_video_label),
         )
     }
