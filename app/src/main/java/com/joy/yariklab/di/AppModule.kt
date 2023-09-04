@@ -48,6 +48,7 @@ val appModule = module {
             signInUpInteractor = get(),
             errorEmitter = get(),
             resourceProvider = get(),
+            mediaProvider = get(),
         )
     }
     viewModel {
