@@ -299,7 +299,6 @@ exceptions:
     exceptionNames:
       - 'Error'
       - 'Exception'
-      - 'RuntimeException'
       - 'Throwable'
 
 naming:

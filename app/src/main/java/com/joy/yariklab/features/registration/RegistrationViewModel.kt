@@ -1,5 +1,6 @@
 package com.joy.yariklab.features.registration
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.joy.yariklab.R
@@ -12,6 +13,7 @@ import com.joy.yariklab.features.common.ErrorEmitter
 import com.joy.yariklab.features.registration.RegistrationViewModel.Event
 import com.joy.yariklab.features.registration.RegistrationViewModel.ViewState
 import com.joy.yariklab.features.registration.model.UserSex
+import com.joy.yariklab.platformtoolskit.MediaProvider
 import com.joy.yariklab.platformtoolskit.ResourceProvider
 import com.joy.yariklab.toolskit.DATE_FORMAT_YYYY_MM_DD
 import com.joy.yariklab.toolskit.EMPTY_STRING
@@ -23,6 +25,7 @@ class RegistrationViewModel(
     private val signInUpInteractor: SignInUpInteractor,
     private val errorEmitter: ErrorEmitter,
     private val resourceProvider: ResourceProvider,
+    private val mediaProvider: MediaProvider,
 ) : ViewModel(), ViewStateDelegate<ViewState, Event> by ViewStateDelegateImpl(
     ViewState(
         birthDate = null to resourceProvider.getString(R.string.sign_up_birth_date_label)
@@ -46,6 +49,16 @@ class RegistrationViewModel(
         object GoToUserList : Event
         data class ShowValidationErrorDialog(val message: String) : Event
         object ShowDataPickerDialog : Event
+    }
+
+    fun onImageSelect(uri: Uri) {
+        val imageFile = mediaProvider.getMediaFileFromUri(uri)
+        // TODO upload
+    }
+
+    fun onVideoSelect(uri: Uri) {
+        val videoFile = mediaProvider.getMediaFileFromUri(uri)
+        // TODO upload
     }
 
     fun onNameChanged(name: String) {

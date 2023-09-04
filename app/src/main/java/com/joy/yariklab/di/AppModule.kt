@@ -23,6 +23,8 @@ import com.joy.yariklab.features.registration.RegistrationViewModel
 import com.joy.yariklab.features.start.StartViewModel
 import com.joy.yariklab.features.userlist.UserListViewModel
 import com.joy.yariklab.main.MainViewModel
+import com.joy.yariklab.platformtoolskit.MediaProvider
+import com.joy.yariklab.platformtoolskit.MediaProviderImpl
 import com.joy.yariklab.platformtoolskit.ResourceProvider
 import com.joy.yariklab.platformtoolskit.ResourceProviderImpl
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -75,6 +77,12 @@ val appModule = module {
 
     single<ResourceProvider> {
         ResourceProviderImpl(
+            context = get(),
+        )
+    }
+
+    single<MediaProvider> {
+        MediaProviderImpl(
             context = get(),
         )
     }

@@ -35,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -53,6 +54,7 @@ import com.joy.yariklab.ui.theme.Pink80
 import com.joy.yariklab.uikit.LabProgressBar
 import com.joy.yariklab.uikit.simplePadding
 import kotlinx.coroutines.flow.collectLatest
+
 
 @Composable
 fun RegistrationScreen(
@@ -87,8 +89,15 @@ fun RegistrationScreen(
         viewModel = viewModel,
     )
 
-    OpenImagePicker(openImagePicker)
-    OpenVideoPicker(openVideoPicker)
+    OpenImagePicker(
+        viewModel = viewModel,
+        openImagePicker = openImagePicker,
+    )
+
+    OpenVideoPicker(
+        viewModel = viewModel,
+        openVideoPicker = openVideoPicker,
+    )
 
     LaunchedEffect(key1 = Unit) {
         viewModel.singleEvents.collectLatest { event ->
@@ -146,13 +155,17 @@ fun DateDialog(
 }
 
 @Composable
-private fun OpenImagePicker(openImagePicker: MutableState<Boolean>) {
+private fun OpenImagePicker(
+    viewModel: RegistrationViewModel,
+    openImagePicker: MutableState<Boolean>,
+) {
     if (openImagePicker.value) {
+        val context = LocalContext.current
         val pickMedia = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.PickVisualMedia(),
             onResult = {
                 it?.let { uri ->
-                    uri.hashCode()
+                    viewModel.onImageSelect(uri)
                 }
                 openImagePicker.value = false
             }
@@ -165,13 +178,16 @@ private fun OpenImagePicker(openImagePicker: MutableState<Boolean>) {
 }
 
 @Composable
-private fun OpenVideoPicker(openVideoPicker: MutableState<Boolean>) {
+private fun OpenVideoPicker(
+    viewModel: RegistrationViewModel,
+    openVideoPicker: MutableState<Boolean>,
+) {
     if (openVideoPicker.value) {
         val pickMedia = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.PickVisualMedia(),
             onResult = {
                 it?.let { uri ->
-                    uri.hashCode()
+                    viewModel.onVideoSelect(uri)
                 }
                 openVideoPicker.value = false
             }
