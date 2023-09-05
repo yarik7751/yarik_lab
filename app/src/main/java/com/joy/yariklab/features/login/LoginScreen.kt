@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.joy.yariklab.R
 import com.joy.yariklab.features.common.logo.StartTitle
+import com.joy.yariklab.features.login.LoginViewModel.Event
 import com.joy.yariklab.navigation.FlowCoordinator
 import com.joy.yariklab.ui.theme.DefaultButton
 import com.joy.yariklab.ui.theme.DefaultTextField
@@ -49,7 +50,9 @@ fun LoginScreen(
     LaunchedEffect(key1 = Unit) {
         viewModel.singleEvents.collectLatest { event ->
             when (event) {
-                else -> {}
+                Event.GoToUserList -> {
+                    flowCoordinator.goToUserList()
+                }
             }
         }
     }

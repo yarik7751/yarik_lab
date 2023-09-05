@@ -9,6 +9,8 @@ interface FlowCoordinator {
     fun goToLogin()
 
     fun goToRegistration()
+
+    fun goToUserList()
 }
 
 class FlowCoordinatorImpl(
@@ -28,6 +30,12 @@ class FlowCoordinatorImpl(
     override fun goToRegistration() {
         navController.navigate(
             route = Navigation.Registration.destination
+        )
+    }
+
+    override fun goToUserList() {
+        navController.navigate(
+            route = Navigation.UserList.destination
         )
     }
 }

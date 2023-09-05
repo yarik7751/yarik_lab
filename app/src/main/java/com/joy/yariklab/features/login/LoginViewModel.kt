@@ -5,14 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.joy.yariklab.archkit.ViewStateDelegate
 import com.joy.yariklab.archkit.ViewStateDelegateImpl
 import com.joy.yariklab.archkit.safeLaunch
-import com.joy.yariklab.core.domain.usecase.LoginUserUseCase
+import com.joy.yariklab.core.domain.interactor.SignInUpInteractor
 import com.joy.yariklab.features.common.ErrorEmitter
 import com.joy.yariklab.features.login.LoginViewModel.Event
 import com.joy.yariklab.features.login.LoginViewModel.ViewState
 import com.joy.yariklab.toolskit.EMPTY_STRING
 
 class LoginViewModel(
-    private val loginUserUseCase: LoginUserUseCase,
+    private val signInUpInteractor: SignInUpInteractor,
     private val errorEmitter: ErrorEmitter,
 ) : ViewModel(), ViewStateDelegate<ViewState, Event> by ViewStateDelegateImpl(ViewState()) {
 
@@ -22,7 +22,9 @@ class LoginViewModel(
         val password: String = EMPTY_STRING,
     )
 
-    sealed interface Event
+    sealed interface Event {
+        object GoToUserList : Event
+    }
 
     fun onLoginChanged(login: String) {
         viewModelScope.reduce {
@@ -38,12 +40,19 @@ class LoginViewModel(
 
     fun onLoginAction() {
         viewModelScope.safeLaunch(errorEmitter::emit) {
-            loginUserUseCase.execute(
-                LoginUserUseCase.Params(
-                    login = stateValue.login,
-                    password = stateValue.password,
-                )
+            reduce {
+                it.copy(isLoading = true)
+            }
+            signInUpInteractor.login(
+                login = stateValue.login,
+                password = stateValue.password,
             )
+
+            sendEvent(Event.GoToUserList)
+        }.invokeOnCompletion {
+            viewModelScope.reduce {
+                it.copy(isLoading = false)
+            }
         }
     }
 }

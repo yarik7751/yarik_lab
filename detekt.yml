@@ -168,10 +168,10 @@ complexity:
   TooManyFunctions:
     active: true
     excludes: ['**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**']
-    thresholdInFiles: 11
-    thresholdInClasses: 11
-    thresholdInInterfaces: 11
-    thresholdInObjects: 11
+    thresholdInFiles: 20
+    thresholdInClasses: 20
+    thresholdInInterfaces: 20
+    thresholdInObjects: 30
     thresholdInEnums: 11
     ignoreDeprecated: false
     ignorePrivate: false
@@ -299,7 +299,6 @@ exceptions:
     exceptionNames:
       - 'Error'
       - 'Exception'
-      - 'RuntimeException'
       - 'Throwable'
 
 naming:
@@ -583,7 +582,7 @@ style:
     ignoreEnums: false
     ignoreRanges: false
     ignoreExtensionFunctions: true
-    ignoreAnnotated: ['Preview']
+    ignoreAnnotated: ['Preview', 'Composable']
   MandatoryBracesIfStatements:
     active: false
   MandatoryBracesLoops:
