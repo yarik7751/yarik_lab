@@ -61,4 +61,16 @@ class SignInUpRepositoryImpl(
             )
         }
     }
+
+    override suspend fun uploadVideo(file: File): UploadedFile {
+        return withContext(dispatchersProvider.background()) {
+            val imageBody = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val part = MultipartBody.Part.createFormData("video", file.name, imageBody)
+            val remote = remoteService.uploadVideo(part)
+            UploadedFile(
+                filePath = remote.filePath,
+                fileUrl = remote.fileUrl,
+            )
+        }
+    }
 }

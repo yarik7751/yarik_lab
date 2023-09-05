@@ -29,4 +29,10 @@ interface JoyLoveRemoteService {
     suspend fun uploadAvatar(
         @Part image: MultipartBody.Part
     ): UploadedFileRemote
+
+    @Multipart
+    @POST("uploadvideo")
+    suspend fun uploadVideo(
+        @Part image: MultipartBody.Part
+    ): UploadedFileRemote
 }

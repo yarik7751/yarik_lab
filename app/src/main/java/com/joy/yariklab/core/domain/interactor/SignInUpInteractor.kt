@@ -14,4 +14,6 @@ interface SignInUpInteractor {
     suspend fun register(params: RegistrationParamsRemote)
 
     suspend fun uploadAvatar(file: File): UploadedFile
+
+    suspend fun uploadVideo(file: File): UploadedFile
 }

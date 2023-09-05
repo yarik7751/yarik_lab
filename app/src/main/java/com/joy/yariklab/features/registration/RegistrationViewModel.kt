@@ -29,7 +29,8 @@ class RegistrationViewModel(
 ) : ViewModel(), ViewStateDelegate<ViewState, Event> by ViewStateDelegateImpl(
     ViewState(
         birthDate = null to resourceProvider.getString(R.string.sign_up_birth_date_label),
-        avatarFileName = resourceProvider.getString(R.string.sign_up_birth_logo_label)
+        avatarFileName = resourceProvider.getString(R.string.sign_up_birth_logo_label),
+        videoFileName = resourceProvider.getString(R.string.sign_up_birth_video_label),
     )
 ) {
 
@@ -41,7 +42,7 @@ class RegistrationViewModel(
         val avatarFileName: String,
         val avatarUrl: String = EMPTY_STRING,
         val videoPath: String = EMPTY_STRING,
-        val videoFileName: String = EMPTY_STRING,
+        val videoFileName: String,
         val videoUrl: String = EMPTY_STRING,
         val password: String = EMPTY_STRING,
         val email: String = EMPTY_STRING,
@@ -78,8 +79,24 @@ class RegistrationViewModel(
     }
 
     fun onVideoSelect(uri: Uri) {
-        val videoFile = mediaProvider.getMediaFileFromUri(uri)
-        // TODO upload
+        viewModelScope.safeLaunch(errorEmitter::emit) {
+            reduce {
+                it.copy(isLoading = true)
+            }
+            val videoFile = mediaProvider.getMediaFileFromUri(uri)
+            val imagePath = signInUpInteractor.uploadVideo(videoFile)
+            reduce {
+                it.copy(
+                    videoPath = imagePath.filePath,
+                    videoUrl = imagePath.fileUrl,
+                    videoFileName = videoFile.name,
+                )
+            }
+        }.invokeOnCompletion {
+            viewModelScope.reduce {
+                it.copy(isLoading = false)
+            }
+        }
     }
 
     fun onNameChanged(name: String) {
@@ -146,8 +163,8 @@ class RegistrationViewModel(
                     email = stateValue.email,
                     latitude = 0F,
                     longitude = 0F,
-                    logoPath = /*tateValue.avatarPath*/"avaters/testavatar",
-                    videoPath = /*stateValue.videoPath*/"videos/testvideo",
+                    logoPath = stateValue.avatarPath,
+                    videoPath = stateValue.videoPath,
                     mobilePhone = stateValue.mobilePhone,
                     name = stateValue.name,
                     password = stateValue.password,
@@ -172,13 +189,12 @@ class RegistrationViewModel(
             stateValue.birthDate.first == null -> {
                 resourceProvider.getString(R.string.sign_up_birth_date_error)
             }
-            // TODO add requests for avatar and video
-            /*stateValue.avatarPath.isBlank() -> {
+            stateValue.avatarPath.isBlank() -> {
                 resourceProvider.getString(R.string.sign_up_logo_error)
             }
             stateValue.videoPath.isBlank() -> {
                 resourceProvider.getString(R.string.sign_up_video_error)
-            }*/
+            }
             stateValue.password.isBlank() -> {
                 resourceProvider.getString(R.string.sign_up_password_error)
             }

@@ -207,7 +207,8 @@ fun RegistrationScreenPreview() {
         background = Color.White,
         state = RegistrationViewModel.ViewState(
             birthDate = null to "test date",
-            avatarFileName = "test file name"
+            avatarFileName = "test file name",
+            videoFileName = "test file name",
         ),
         openImagePicker = remember { mutableStateOf(false) },
         openVideoPicker = remember { mutableStateOf(false) },
@@ -237,7 +238,7 @@ fun RegistrationInfo(
 
         RegistrationNameBirthDate(viewModel, state)
         RegistrationLogo(openImagePicker, state)
-        RegistrationVideo(openVideoPicker)
+        RegistrationVideo(openVideoPicker, state)
         RegistrationPassword(viewModel)
         RegistrationEmail(viewModel)
         RegistrationPhone(viewModel)
@@ -310,7 +311,6 @@ fun RegistrationLogo(
     openImagePicker: MutableState<Boolean>,
     state: RegistrationViewModel.ViewState,
 ) {
-    // openImagePicker()
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -343,7 +343,10 @@ fun RegistrationLogo(
 }
 
 @Composable
-fun RegistrationVideo(openVideoPicker: MutableState<Boolean>) {
+fun RegistrationVideo(
+    openVideoPicker: MutableState<Boolean>,
+    state: RegistrationViewModel.ViewState,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -356,8 +359,11 @@ fun RegistrationVideo(openVideoPicker: MutableState<Boolean>) {
                 .clickable {
                     openVideoPicker.value = true
                 },
-            painter = painterResource(id = R.drawable.ic_registration_video),
-            contentDescription = "Image for uploaded logo",
+            painter = when {
+                state.videoUrl.isNotEmpty() -> rememberAsyncImagePainter(state.videoUrl)
+                else -> painterResource(id = R.drawable.ic_registration_video)
+            },
+            contentDescription = "Image for uploaded video",
         )
 
         Text(
@@ -367,7 +373,7 @@ fun RegistrationVideo(openVideoPicker: MutableState<Boolean>) {
                 .clickable {
                     openVideoPicker.value = true
                 },
-            text = stringResource(id = R.string.sign_up_birth_video_label),
+            text = state.videoFileName,
         )
     }
 }

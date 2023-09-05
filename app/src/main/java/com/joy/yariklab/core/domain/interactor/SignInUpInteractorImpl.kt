@@ -23,4 +23,8 @@ class SignInUpInteractorImpl(
     override suspend fun uploadAvatar(file: File): UploadedFile {
         return repository.uploadAvatar(file)
     }
+
+    override suspend fun uploadVideo(file: File): UploadedFile {
+        return repository.uploadVideo(file)
+    }
 }
