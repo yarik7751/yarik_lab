@@ -1,6 +1,8 @@
 package com.joy.yariklab.core.domain.interactor
 
 import com.joy.yariklab.core.api.model.joylove.RegistrationParamsRemote
+import com.joy.yariklab.core.data.model.joylove.UploadedFile
+import java.io.File
 
 interface SignInUpInteractor {
 
@@ -10,4 +12,6 @@ interface SignInUpInteractor {
     )
 
     suspend fun register(params: RegistrationParamsRemote)
+
+    suspend fun uploadAvatar(file: File): UploadedFile
 }

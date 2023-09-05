@@ -42,6 +42,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.joy.yariklab.R
 import com.joy.yariklab.features.common.logo.StartTitle
 import com.joy.yariklab.features.registration.RegistrationViewModel.Event
@@ -206,6 +207,7 @@ fun RegistrationScreenPreview() {
         background = Color.White,
         state = RegistrationViewModel.ViewState(
             birthDate = null to "test date",
+            avatarFileName = "test file name"
         ),
         openImagePicker = remember { mutableStateOf(false) },
         openVideoPicker = remember { mutableStateOf(false) },
@@ -234,7 +236,7 @@ fun RegistrationInfo(
         }
 
         RegistrationNameBirthDate(viewModel, state)
-        RegistrationLogo(openImagePicker)
+        RegistrationLogo(openImagePicker, state)
         RegistrationVideo(openVideoPicker)
         RegistrationPassword(viewModel)
         RegistrationEmail(viewModel)
@@ -304,11 +306,15 @@ fun RegistrationNameBirthDate(
 }
 
 @Composable
-fun RegistrationLogo(openImagePicker: MutableState<Boolean>) {
+fun RegistrationLogo(
+    openImagePicker: MutableState<Boolean>,
+    state: RegistrationViewModel.ViewState,
+) {
     // openImagePicker()
     Row(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .simplePadding(top = 8.dp),
     ) {
         Image(
             modifier = Modifier
@@ -317,7 +323,10 @@ fun RegistrationLogo(openImagePicker: MutableState<Boolean>) {
                 .clickable {
                     openImagePicker.value = true
                 },
-            painter = painterResource(id = R.drawable.ic_registration_person),
+            painter = when {
+                state.avatarUrl.isNotEmpty() -> rememberAsyncImagePainter(state.avatarUrl)
+                else -> painterResource(id = R.drawable.ic_registration_person)
+            },
             contentDescription = "Image for uploaded logo",
         )
 
@@ -328,7 +337,7 @@ fun RegistrationLogo(openImagePicker: MutableState<Boolean>) {
                 .clickable {
                     openImagePicker.value = true
                 },
-            text = stringResource(id = R.string.sign_up_birth_logo_label),
+            text = state.avatarFileName,
         )
     }
 }
@@ -337,7 +346,8 @@ fun RegistrationLogo(openImagePicker: MutableState<Boolean>) {
 fun RegistrationVideo(openVideoPicker: MutableState<Boolean>) {
     Row(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .simplePadding(top = 8.dp),
     ) {
         Image(
             modifier = Modifier

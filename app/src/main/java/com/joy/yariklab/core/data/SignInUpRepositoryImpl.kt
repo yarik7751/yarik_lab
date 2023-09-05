@@ -5,10 +5,15 @@ import com.joy.yariklab.core.api.model.joylove.LoginParamsRemote
 import com.joy.yariklab.core.api.model.joylove.RegistrationParamsRemote
 import com.joy.yariklab.core.api.model.joylove.UserTokensRemote
 import com.joy.yariklab.core.api.service.JoyLoveRemoteService
+import com.joy.yariklab.core.data.model.joylove.UploadedFile
 import com.joy.yariklab.core.data.model.joylove.UserTokens
 import com.joy.yariklab.core.domain.repository.SignInUpRepository
 import com.joy.yariklab.core.local.JoyLoveCache
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 
 class SignInUpRepositoryImpl(
     private val remoteService: JoyLoveRemoteService,
@@ -42,6 +47,18 @@ class SignInUpRepositoryImpl(
             refreshToken = this.refreshToken,
         ).let {
             joyLoveCache.saveTokens(it)
+        }
+    }
+
+    override suspend fun uploadAvatar(file: File): UploadedFile {
+        return withContext(dispatchersProvider.background()) {
+            val imageBody = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val part = MultipartBody.Part.createFormData("image", file.name, imageBody)
+            val remote = remoteService.uploadAvatar(part)
+            UploadedFile(
+                filePath = remote.filePath,
+                fileUrl = remote.fileUrl,
+            )
         }
     }
 }

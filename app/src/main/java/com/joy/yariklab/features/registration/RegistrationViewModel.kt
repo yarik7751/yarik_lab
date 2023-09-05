@@ -28,7 +28,8 @@ class RegistrationViewModel(
     private val mediaProvider: MediaProvider,
 ) : ViewModel(), ViewStateDelegate<ViewState, Event> by ViewStateDelegateImpl(
     ViewState(
-        birthDate = null to resourceProvider.getString(R.string.sign_up_birth_date_label)
+        birthDate = null to resourceProvider.getString(R.string.sign_up_birth_date_label),
+        avatarFileName = resourceProvider.getString(R.string.sign_up_birth_logo_label)
     )
 ) {
 
@@ -37,7 +38,11 @@ class RegistrationViewModel(
         val name: String = EMPTY_STRING,
         val birthDate: Pair<Date?, String>,
         val avatarPath: String = EMPTY_STRING,
+        val avatarFileName: String,
+        val avatarUrl: String = EMPTY_STRING,
         val videoPath: String = EMPTY_STRING,
+        val videoFileName: String = EMPTY_STRING,
+        val videoUrl: String = EMPTY_STRING,
         val password: String = EMPTY_STRING,
         val email: String = EMPTY_STRING,
         val mobilePhone: String = EMPTY_STRING,
@@ -52,8 +57,24 @@ class RegistrationViewModel(
     }
 
     fun onImageSelect(uri: Uri) {
-        val imageFile = mediaProvider.getMediaFileFromUri(uri)
-        // TODO upload
+        viewModelScope.safeLaunch(errorEmitter::emit) {
+            reduce {
+                it.copy(isLoading = true)
+            }
+            val imageFile = mediaProvider.getMediaFileFromUri(uri)
+            val imagePath = signInUpInteractor.uploadAvatar(imageFile)
+            reduce {
+                it.copy(
+                    avatarPath = imagePath.filePath,
+                    avatarUrl = imagePath.fileUrl,
+                    avatarFileName = imageFile.name,
+                )
+            }
+        }.invokeOnCompletion {
+            viewModelScope.reduce {
+                it.copy(isLoading = false)
+            }
+        }
     }
 
     fun onVideoSelect(uri: Uri) {
