@@ -5,6 +5,7 @@ import com.joy.yariklab.core.api.model.joylove.RegistrationParamsRemote
 import com.joy.yariklab.core.api.model.joylove.UploadedFileRemote
 import com.joy.yariklab.core.api.model.joylove.UserTokensRemote
 import com.joy.yariklab.core.api.model.joylove.user.UserForLoveRemote
+import com.joy.yariklab.core.api.retrofit.annotation.UnauthorizedMethod
 import okhttp3.MultipartBody
 import retrofit2.Retrofit
 import retrofit2.create
@@ -21,18 +22,24 @@ interface JoyLoveRemoteService {
         fun getInstance(retrofit: Retrofit): JoyLoveRemoteService = retrofit.create()
     }
 
+    val abc: Int
+
+    @UnauthorizedMethod
     @POST("login")
     suspend fun login(@Body params: LoginParamsRemote): UserTokensRemote
 
+    @UnauthorizedMethod
     @POST("registration")
     suspend fun register(@Body params: RegistrationParamsRemote): UserTokensRemote
 
+    @UnauthorizedMethod
     @Multipart
     @POST("uploadavatar")
     suspend fun uploadAvatar(
         @Part image: MultipartBody.Part
     ): UploadedFileRemote
 
+    @UnauthorizedMethod
     @Multipart
     @POST("uploadvideo")
     suspend fun uploadVideo(
