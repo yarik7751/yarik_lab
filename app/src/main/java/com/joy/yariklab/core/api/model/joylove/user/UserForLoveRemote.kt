@@ -5,14 +5,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserForLoveRemote(
+    @SerialName("id")
+    val id: Int,
     @SerialName("age")
     val age: Int,
     @SerialName("contacts")
-    val contacts: String,
+    val contacts: String?,
     @SerialName("email")
     val email: String,
-    @SerialName("id")
-    val id: Int,
     @SerialName("logoPath")
     val logoPath: String,
     @SerialName("mobilePhone")
