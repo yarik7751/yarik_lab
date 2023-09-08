@@ -88,7 +88,9 @@ fun UserListInfo(
                 ),
             onClick = {
                 exoPlayer.apply {
-                    setMediaItem(MediaItem.fromUri("http://10.0.2.2:8080/videos/5cde15d6-335f-4657-9d66-60f3f744b071.mp4"))
+                    setMediaItem(
+                        MediaItem.fromUri("http://10.0.2.2:8080/videos/5cde15d6-335f-4657-9d66-60f3f744b071.mp4")
+                    )
                     prepare()
                     play()
                 }
