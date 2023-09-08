@@ -10,11 +10,12 @@ import com.joy.yariklab.features.start.StartScreen
 import com.joy.yariklab.features.userlist.UserListScreen
 import org.koin.androidx.compose.koinViewModel
 
-fun NavGraphBuilder.buildNavigation(navController: NavController) {
+fun NavGraphBuilder.buildNavigation(
+    navController: NavController,
+    startDestination: String = Navigation.Start.destination,
+) {
 
     val flowCoordinator: FlowCoordinator = FlowCoordinatorImpl(navController)
-
-    val startDestination = Navigation.Start.destination
 
     navigation(
         startDestination = startDestination,

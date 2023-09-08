@@ -38,15 +38,24 @@ class MainActivity : ComponentActivity() {
                     )
                 )
             }
+            val startDestination = remember {
+                mutableStateOf(EMPTY_STRING)
+            }
+
             YariklabTheme {
                 Surface(color = MaterialTheme.colors.background) {
                     val navController = rememberNavController()
 
-                    NavHost(
-                        navController = navController,
-                        startDestination = Navigation.Root.destination,
-                    ) {
-                        buildNavigation(navController)
+                    if (startDestination.value.isNotEmpty()) {
+                        NavHost(
+                            navController = navController,
+                            startDestination = Navigation.Root.destination,
+                        ) {
+                            buildNavigation(
+                                navController = navController,
+                                startDestination = startDestination.value,
+                            )
+                        }
                     }
                 }
             }
@@ -64,6 +73,10 @@ class MainActivity : ComponentActivity() {
                                 title = event.title,
                                 message = event.message,
                             )
+                        }
+
+                        is MainViewModel.Event.OpenFirstScreen -> {
+                            startDestination.value = event.destination
                         }
                     }}
                 }
