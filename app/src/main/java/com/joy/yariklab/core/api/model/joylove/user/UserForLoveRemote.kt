@@ -13,8 +13,10 @@ data class UserForLoveRemote(
     val contacts: String?,
     @SerialName("email")
     val email: String,
-    @SerialName("logoPath")
-    val logoPath: String,
+    @SerialName("logoUrl")
+    val logoUrl: String,
+    @SerialName("videoUrl")
+    val videoUrl: String,
     @SerialName("mobilePhone")
     val mobilePhone: String,
     @SerialName("name")
@@ -23,6 +25,4 @@ data class UserForLoveRemote(
     val rating: Double,
     @SerialName("sex")
     val sex: Int,
-    @SerialName("videoPath")
-    val videoPath: String,
 )

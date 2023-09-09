@@ -26,12 +26,12 @@ class LoveRepositoryImpl(
                     age = remote.age,
                     contacts = remote.contacts.orEmpty(),
                     email = remote.email,
-                    logoPath = remote.logoPath,
+                    logoUrl = remote.logoUrl,
+                    videoUrl = remote.videoUrl,
                     mobilePhone = remote.mobilePhone,
                     name = remote.name,
                     rating = remote.rating,
                     sex = remote.sex,
-                    videoPath = remote.videoPath,
                 )
             }
         }

@@ -5,10 +5,10 @@ data class UserForLove(
     val age: Int,
     val contacts: String,
     val email: String,
-    val logoPath: String,
+    val logoUrl: String,
     val mobilePhone: String,
     val name: String,
     val rating: Double,
     val sex: Int,
-    val videoPath: String,
+    val videoUrl: String,
 )

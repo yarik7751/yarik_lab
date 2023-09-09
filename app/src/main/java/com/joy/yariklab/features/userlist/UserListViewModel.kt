@@ -9,6 +9,7 @@ import com.joy.yariklab.core.domain.interactor.LoveInteractor
 import com.joy.yariklab.features.common.ErrorEmitter
 import com.joy.yariklab.features.userlist.UserListViewModel.Event
 import com.joy.yariklab.features.userlist.UserListViewModel.ViewState
+import com.joy.yariklab.toolskit.EMPTY_STRING
 
 class UserListViewModel(
     private val loveInteractor: LoveInteractor,
@@ -17,6 +18,7 @@ class UserListViewModel(
 
     data class ViewState(
         val isLoading: Boolean = false,
+        val videoUrl: String = EMPTY_STRING,
     )
 
     sealed interface Event
@@ -24,7 +26,9 @@ class UserListViewModel(
     init {
         viewModelScope.safeLaunch(errorEmitter::emit) {
             val users = loveInteractor.getUsersForLove()
-            users.hashCode()
+            reduce {
+                it.copy(videoUrl = users.lastOrNull()?.videoUrl.orEmpty())
+            }
         }
     }
 }

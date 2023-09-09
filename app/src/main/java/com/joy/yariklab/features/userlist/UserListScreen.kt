@@ -19,6 +19,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.joy.yariklab.navigation.FlowCoordinator
@@ -29,6 +32,7 @@ import com.joy.yariklab.uikit.simplePadding
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
+@androidx.media3.common.util.UnstableApi
 fun UserListScreen(
     viewModel: UserListViewModel,
     flowCoordinator: FlowCoordinator,
@@ -55,6 +59,7 @@ fun UserListScreen(
 
 @Preview
 @Composable
+@androidx.media3.common.util.UnstableApi
 fun UserListScreenPreview() {
     UserListInfo(
         background = Color.White,
@@ -63,6 +68,7 @@ fun UserListScreenPreview() {
 }
 
 @Composable
+@androidx.media3.common.util.UnstableApi
 fun UserListInfo(
     background: Color = Color.Transparent,
     viewModel: UserListViewModel? = null,
@@ -70,7 +76,9 @@ fun UserListInfo(
 ) {
     val context = LocalContext.current
     val exoPlayer = remember {
-        ExoPlayer.Builder(context).build()
+        val render = DefaultRenderersFactory(context).setEnableDecoderFallback(true)
+        ExoPlayer.Builder(context, render)
+            .build()
     }
 
     Box(
@@ -87,12 +95,38 @@ fun UserListInfo(
                     bottom = 8.dp,
                 ),
             onClick = {
-                exoPlayer.apply {
-                    setMediaItem(
-                        MediaItem.fromUri("http://10.0.2.2:8080/videos/5cde15d6-335f-4657-9d66-60f3f744b071.mp4")
-                    )
-                    prepare()
-                    play()
+                if (state.videoUrl.isNotEmpty()) {
+                    exoPlayer.apply {
+                        setMediaItem(
+                            MediaItem.fromUri(state.videoUrl)
+                        )
+                        /*setMediaItem(
+                            MediaItem.fromUri("http://10.0.2.2:8080/videos/5cde15d6-335f-4657-9d66-60f3f744b071.mp4")
+                        )*/
+                        prepare()
+                        play()
+
+                        addListener(object : Player.Listener {
+                            override fun onPlayerError(error: PlaybackException) {
+                                super.onPlayerError(error)
+                            }
+                            override fun onPlaybackStateChanged(playbackState: Int) {
+                                super.onPlaybackStateChanged(playbackState)
+
+                                if (playbackState == Player.STATE_READY) {
+                                    if (exoPlayer.playWhenReady) {
+                                        playbackState.hashCode()
+                                    } else {
+                                        playbackState.hashCode()
+                                    }
+                                } else if (playbackState == Player.STATE_ENDED) {
+                                    playbackState.hashCode()
+                                } else {
+                                    playbackState.hashCode()
+                                }
+                            }
+                        })
+                    }
                 }
             },
             containerColor = Green,
