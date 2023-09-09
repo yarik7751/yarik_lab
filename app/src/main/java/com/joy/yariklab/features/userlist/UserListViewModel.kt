@@ -111,6 +111,6 @@ class UserListViewModel(
     }
 
     fun onSkipClick() {
-
+        // TODO
     }
 }
