@@ -1,7 +1,9 @@
 package com.joy.yariklab.core.data
 
 import com.joy.yariklab.archkit.DispatchersProvider
+import com.joy.yariklab.core.api.model.joylove.user.LikeUserParamsRemote
 import com.joy.yariklab.core.api.service.JoyLoveRemoteService
+import com.joy.yariklab.core.data.model.joylove.LikeUserResult
 import com.joy.yariklab.core.data.model.joylove.UserForLove
 import com.joy.yariklab.core.domain.repository.LoveRepository
 import com.joy.yariklab.core.local.JoyLoveCache
@@ -32,6 +34,18 @@ class LoveRepositoryImpl(
                     name = remote.name,
                     rating = remote.rating,
                     sex = remote.sex,
+                )
+            }
+        }
+    }
+
+    override suspend fun likeUser(likeUserId: Int): LikeUserResult {
+        val params = LikeUserParamsRemote(likeUserId)
+        return withContext(dispatchersProvider.background()) {
+            remoteService.likeUser(params).let { remote ->
+                LikeUserResult(
+                    isMeetingConfirmed = remote.isMeetingConfirmed,
+                    isMeetingCreated = remote.isMeetingCreated,
                 )
             }
         }

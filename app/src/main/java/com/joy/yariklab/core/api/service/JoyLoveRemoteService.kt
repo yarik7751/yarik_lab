@@ -4,6 +4,8 @@ import com.joy.yariklab.core.api.model.joylove.LoginParamsRemote
 import com.joy.yariklab.core.api.model.joylove.RegistrationParamsRemote
 import com.joy.yariklab.core.api.model.joylove.UploadedFileRemote
 import com.joy.yariklab.core.api.model.joylove.UserTokensRemote
+import com.joy.yariklab.core.api.model.joylove.user.LikeUserParamsRemote
+import com.joy.yariklab.core.api.model.joylove.user.LikeUserResultRemote
 import com.joy.yariklab.core.api.model.joylove.user.UserForLoveRemote
 import com.joy.yariklab.core.api.retrofit.annotation.UnauthorizedMethod
 import okhttp3.MultipartBody
@@ -53,4 +55,9 @@ interface JoyLoveRemoteService {
         @Query("agemin") ageMin: Int,
         @Query("agemax") ageMax: Int,
     ): List<UserForLoveRemote>
+
+    @POST("likeuser")
+    suspend fun likeUser(
+        @Body params: LikeUserParamsRemote,
+    ): LikeUserResultRemote
 }

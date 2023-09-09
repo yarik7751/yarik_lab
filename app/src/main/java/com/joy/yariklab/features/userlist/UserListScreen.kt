@@ -19,8 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
-import androidx.media3.common.PlaybackException
-import androidx.media3.common.Player
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
@@ -87,6 +85,17 @@ fun UserListInfo(
     ) {
         VideoPlayer(exoPlayer)
 
+        val currentUser = state.currentUser
+        if (currentUser != null) {
+            exoPlayer.apply {
+                setMediaItem(
+                    MediaItem.fromUri(currentUser.videoUrl)
+                )
+                prepare()
+                play()
+            }
+        }
+
         FloatingActionButton(
             modifier = Modifier
                 .align(Alignment.BottomStart)
@@ -95,39 +104,7 @@ fun UserListInfo(
                     bottom = 8.dp,
                 ),
             onClick = {
-                if (state.videoUrl.isNotEmpty()) {
-                    exoPlayer.apply {
-                        setMediaItem(
-                            MediaItem.fromUri(state.videoUrl)
-                        )
-                        /*setMediaItem(
-                            MediaItem.fromUri("http://10.0.2.2:8080/videos/5cde15d6-335f-4657-9d66-60f3f744b071.mp4")
-                        )*/
-                        prepare()
-                        play()
-
-                        addListener(object : Player.Listener {
-                            override fun onPlayerError(error: PlaybackException) {
-                                super.onPlayerError(error)
-                            }
-                            override fun onPlaybackStateChanged(playbackState: Int) {
-                                super.onPlaybackStateChanged(playbackState)
-
-                                if (playbackState == Player.STATE_READY) {
-                                    if (exoPlayer.playWhenReady) {
-                                        playbackState.hashCode()
-                                    } else {
-                                        playbackState.hashCode()
-                                    }
-                                } else if (playbackState == Player.STATE_ENDED) {
-                                    playbackState.hashCode()
-                                } else {
-                                    playbackState.hashCode()
-                                }
-                            }
-                        })
-                    }
-                }
+                viewModel?.onLikeClick()
             },
             containerColor = Green,
         ) {
@@ -141,7 +118,9 @@ fun UserListInfo(
                     end = 8.dp,
                     bottom = 8.dp,
                 ),
-            onClick = {},
+            onClick = {
+                viewModel?.onSkipClick()
+            },
             containerColor = Red,
         ) {
             Icon(Icons.Filled.Close, "Skip ation")

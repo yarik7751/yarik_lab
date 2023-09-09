@@ -1,6 +1,6 @@
-package com.joy.yariklab.core.data.model.joylove
+package com.joy.yariklab.features.userlist.model
 
-data class UserForLove(
+data class UserForLoveUi(
     val id: Int,
     val age: Int,
     val contacts: String,
@@ -11,4 +11,6 @@ data class UserForLove(
     val name: String,
     val rating: Double,
     val sex: Int,
+    val isCurrent: Boolean,
+    val isLiked: Boolean,
 )
