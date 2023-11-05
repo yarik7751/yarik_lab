@@ -108,7 +108,7 @@ fun UserListInfo(
             },
             containerColor = Green,
         ) {
-            Icon(Icons.Filled.Done, "Like ation")
+            Icon(Icons.Filled.Done, "Like action")
         }
 
         FloatingActionButton(
@@ -123,7 +123,7 @@ fun UserListInfo(
             },
             containerColor = Red,
         ) {
-            Icon(Icons.Filled.Close, "Skip ation")
+            Icon(Icons.Filled.Close, "Skip action")
         }
     }
 }

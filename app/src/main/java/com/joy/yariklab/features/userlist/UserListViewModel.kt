@@ -111,6 +111,29 @@ class UserListViewModel(
     }
 
     fun onSkipClick() {
-        // TODO
+        viewModelScope.safeLaunch(errorEmitter::emit) {
+            stateValue.currentUser?.let { currentUser ->
+                val lastIndex = stateValue.usersForLove.size - 1
+                var newCurrentUser: UserForLoveUi? = null
+                stateValue.usersForLove.forEachIndexed { index, userForLoveUi ->
+                    if (userForLoveUi.id == currentUser.id) {
+                        val newCurrentUserIndex = if (index == lastIndex) 0 else index + 1
+                        newCurrentUser = stateValue.usersForLove[newCurrentUserIndex]
+                    }
+                }
+                val screenStatus = when {
+                    newCurrentUser == null -> UserListStatus.EMPTY_LIST
+                    newCurrentUser?.isLiked == true -> UserListStatus.EMPTY_LIST
+                    else -> UserListStatus.USERS
+                }
+
+                reduce {
+                    it.copy(
+                        currentUser = newCurrentUser,
+                        screenStatus = screenStatus,
+                    )
+                }
+            }
+        }
     }
 }
