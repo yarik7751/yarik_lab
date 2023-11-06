@@ -252,6 +252,7 @@ fun VideoPlayer(
             }
         },
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(8.dp),
     )
 }
