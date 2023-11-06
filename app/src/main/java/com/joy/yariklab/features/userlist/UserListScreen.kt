@@ -2,6 +2,7 @@ package com.joy.yariklab.features.userlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -25,11 +27,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,6 +45,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.joy.yariklab.R
 import com.joy.yariklab.navigation.FlowCoordinator
+import com.joy.yariklab.toolskit.ifNullOrEmpty
 import com.joy.yariklab.ui.theme.DefaultBackground
 import com.joy.yariklab.ui.theme.Green
 import com.joy.yariklab.ui.theme.Pink80
@@ -91,6 +97,7 @@ fun UserListScreenPreview() {
         background = DefaultBackground,
         state = UserListViewModel.ViewState(),
         exoPlayer = null,
+        testUserName = "Long long user name"
     )
 }
 
@@ -101,6 +108,7 @@ fun UserListInfo(
     viewModel: UserListViewModel? = null,
     state: UserListViewModel.ViewState,
     exoPlayer: ExoPlayer?,
+    testUserName: String? = null,
 ) {
     Column(
         modifier = Modifier
@@ -136,9 +144,42 @@ fun UserListInfo(
                 Image(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(),
+                        .fillMaxHeight()
+                        .background(Color.Black),
                     painter = painterResource(id = R.drawable.ic_person_white),
                     contentDescription = "Mock image",
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Image(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(
+                            color = Color.Gray,
+                            shape = CircleShape,
+                        )
+                        .clip(CircleShape)
+                        .border(1.dp, Color.Black, CircleShape),
+                    painter = painterResource(id = R.drawable.ic_person_mock_red),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = "Mock image",
+                )
+
+                Text(
+                    modifier = Modifier
+                        .padding(start = 16.dp),
+                    text = state.currentUser?.name.ifNullOrEmpty { testUserName.orEmpty() },
+                    color = White,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
@@ -153,12 +194,6 @@ fun UserListInfo(
                     shape = RoundedCornerShape(50),
                 ),
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-
-            }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -253,6 +288,7 @@ fun VideoPlayer(
         },
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp),
+            .padding(8.dp)
+            .background(Color.Black),
     )
 }
