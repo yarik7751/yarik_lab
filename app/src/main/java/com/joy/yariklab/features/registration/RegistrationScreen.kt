@@ -48,6 +48,7 @@ import com.joy.yariklab.features.common.logo.StartTitle
 import com.joy.yariklab.features.registration.RegistrationViewModel.Event
 import com.joy.yariklab.navigation.FlowCoordinator
 import com.joy.yariklab.toolskit.EMPTY_STRING
+import com.joy.yariklab.ui.theme.DefaultBackground
 import com.joy.yariklab.ui.theme.DefaultButton
 import com.joy.yariklab.ui.theme.DefaultTextField
 import com.joy.yariklab.ui.theme.Magenta
@@ -67,18 +68,12 @@ fun RegistrationScreen(
     val openImagePicker = remember { mutableStateOf(false) }
     val openVideoPicker = remember { mutableStateOf(false) }
 
-    /*DisposableEffect(key1 = viewModel) {
-        viewModel.hashCode()
-        onDispose {
-            viewModel.hashCode()
-        }
-    }*/
-
     if (state.value.isLoading) {
         LabProgressBar()
     }
 
     RegistrationInfo(
+        background = DefaultBackground,
         viewModel = viewModel,
         state = state.value,
         openImagePicker = openImagePicker,

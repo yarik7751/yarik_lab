@@ -26,6 +26,7 @@ import com.joy.yariklab.R
 import com.joy.yariklab.features.common.logo.StartTitle
 import com.joy.yariklab.features.login.LoginViewModel.Event
 import com.joy.yariklab.navigation.FlowCoordinator
+import com.joy.yariklab.ui.theme.DefaultBackground
 import com.joy.yariklab.ui.theme.DefaultButton
 import com.joy.yariklab.ui.theme.DefaultTextField
 import com.joy.yariklab.uikit.LabProgressBar
@@ -44,7 +45,8 @@ fun LoginScreen(
     }
 
     LoginScreenInfo(
-        viewModel = viewModel
+        background = DefaultBackground,
+        viewModel = viewModel,
     )
 
     LaunchedEffect(key1 = Unit) {

@@ -19,6 +19,7 @@ import com.joy.yariklab.R
 import com.joy.yariklab.features.common.logo.StartTitle
 import com.joy.yariklab.features.start.StartViewModel.Event
 import com.joy.yariklab.navigation.FlowCoordinator
+import com.joy.yariklab.ui.theme.DefaultBackground
 import com.joy.yariklab.ui.theme.DefaultButton
 import com.joy.yariklab.uikit.LabProgressBar
 import com.joy.yariklab.uikit.simplePadding
@@ -35,7 +36,10 @@ fun StartScreen(
         LabProgressBar()
     }
 
-    StartInfo(viewModel)
+    StartInfo(
+        background = DefaultBackground,
+        viewModel = viewModel,
+    )
 
     LaunchedEffect(key1 = Unit) {
         viewModel.singleEvents.collectLatest { event ->
