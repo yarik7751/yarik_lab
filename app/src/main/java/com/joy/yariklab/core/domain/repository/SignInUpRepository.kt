@@ -6,6 +6,8 @@ import java.io.File
 
 interface SignInUpRepository {
 
+    val isUserAuthorized: Boolean
+
     suspend fun login(
         login: String,
         password: String,

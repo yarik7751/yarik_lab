@@ -21,6 +21,9 @@ class SignInUpRepositoryImpl(
     private val dispatchersProvider: DispatchersProvider,
 ): SignInUpRepository {
 
+    override val isUserAuthorized: Boolean
+        get() = joyLoveCache.tokens.token.isNotBlank()
+
     override suspend fun login(
         login: String,
         password: String,
@@ -46,7 +49,7 @@ class SignInUpRepositoryImpl(
             token = this.token,
             refreshToken = this.refreshToken,
         ).let {
-            joyLoveCache.saveTokens(it)
+            joyLoveCache.tokens = it
         }
     }
 

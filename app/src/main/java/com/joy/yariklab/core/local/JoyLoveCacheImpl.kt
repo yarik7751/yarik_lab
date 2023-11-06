@@ -7,8 +7,13 @@ class JoyLoveCacheImpl(
     private val appSettings: AppSettings,
 ): JoyLoveCache {
 
-    override suspend fun saveTokens(userTokens: UserTokens) {
-        appSettings.token = userTokens.token
-        appSettings.refreshToken = userTokens.refreshToken
-    }
+    override var tokens: UserTokens
+        get() = UserTokens(
+            token = appSettings.token,
+            refreshToken = appSettings.refreshToken,
+        )
+        set(value) {
+            appSettings.token = value.token
+            appSettings.refreshToken = value.refreshToken
+        }
 }

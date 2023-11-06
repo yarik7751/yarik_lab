@@ -6,10 +6,15 @@ import com.joy.yariklab.archkit.DispatchersProvider
 import com.joy.yariklab.archkit.DispatchersProviderImpl
 import com.joy.yariklab.core.cache.keyvalue.AppSettings
 import com.joy.yariklab.core.cache.keyvalue.AppSettingsImpl
+import com.joy.yariklab.core.data.LoveRepositoryImpl
 import com.joy.yariklab.core.data.SignInUpRepositoryImpl
+import com.joy.yariklab.core.domain.interactor.LoveInteractor
+import com.joy.yariklab.core.domain.interactor.LoveInteractorImpl
 import com.joy.yariklab.core.domain.interactor.SignInUpInteractor
 import com.joy.yariklab.core.domain.interactor.SignInUpInteractorImpl
+import com.joy.yariklab.core.domain.repository.LoveRepository
 import com.joy.yariklab.core.domain.repository.SignInUpRepository
+import com.joy.yariklab.core.domain.usecase.IsUserAuthorizedUseCase
 import com.joy.yariklab.core.local.JoyLoveCache
 import com.joy.yariklab.core.local.JoyLoveCacheImpl
 import com.joy.yariklab.features.common.ErrorEmitter
@@ -34,6 +39,7 @@ import org.koin.dsl.module
 val appModule = module {
     viewModel {
         MainViewModel(
+            isUserAuthorizedUseCase = get(),
             errorObserver = get(),
         )
     }
@@ -58,6 +64,7 @@ val appModule = module {
     }
     viewModel {
         UserListViewModel(
+            loveInteractor = get(),
             errorEmitter = get(),
         )
     }
@@ -108,6 +115,26 @@ val appModule = module {
 
     single<SignInUpInteractor> {
         SignInUpInteractorImpl(
+            repository = get(),
+        )
+    }
+
+    single<LoveRepository> {
+        LoveRepositoryImpl(
+            dispatchersProvider = get(),
+            remoteService = get(),
+            joyLoveCache = get(),
+        )
+    }
+
+    single<LoveInteractor> {
+        LoveInteractorImpl(
+            repository = get(),
+        )
+    }
+
+    single {
+        IsUserAuthorizedUseCase(
             repository = get(),
         )
     }

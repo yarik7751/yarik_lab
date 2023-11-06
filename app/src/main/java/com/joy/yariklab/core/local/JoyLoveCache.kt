@@ -4,5 +4,5 @@ import com.joy.yariklab.core.data.model.joylove.UserTokens
 
 interface JoyLoveCache {
 
-    suspend fun saveTokens(userTokens: UserTokens)
+    var tokens: UserTokens
 }

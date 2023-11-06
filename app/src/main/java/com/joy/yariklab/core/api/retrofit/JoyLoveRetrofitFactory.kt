@@ -1,6 +1,7 @@
-package com.joy.yariklab.core.api
+package com.joy.yariklab.core.api.retrofit
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.joy.yariklab.core.api.retrofit.interceptor.AuthorizationInterceptor
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -10,7 +11,9 @@ import java.util.concurrent.TimeUnit
 
 private const val DEFAULT_TIMEOUT_SECONDS = 60L
 
-fun getJoyLoveOkHttpClient(): OkHttpClient {
+fun getJoyLoveOkHttpClient(
+    authorizationInterceptor: AuthorizationInterceptor,
+): OkHttpClient {
     return OkHttpClient.Builder()
         .callTimeout(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
         .readTimeout(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
@@ -20,6 +23,7 @@ fun getJoyLoveOkHttpClient(): OkHttpClient {
                 level = HttpLoggingInterceptor.Level.BODY
             }
         )
+        .addInterceptor(authorizationInterceptor)
         .build()
 }
 
